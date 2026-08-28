@@ -1,4 +1,15 @@
-# Parameter Playground — build handoff
+# Parameter Playground — verification handoff
+
+## Current independent verification status — FAIL (2026-08-28)
+
+Tested candidate: `70da583734f6ad38748918285ba23bb606c80d36`
+Live URL: <https://parameter-playground.sociobot.in>
+
+**Do not release this candidate.** Fresh byte-for-byte comparison confirms that live is this commit, not a deployment-only lag. The release has no required `.factory/claims.json` or claim-test commands, and it has no one-click isolated **Try it with sample data** demo. `/demo` and `?demo=1` are the ordinary app and write to `parameter-playground-draft`, not a `demo:` namespace. The cold first screen also fails to name teachers/self-learners in plain words.
+
+Fresh local and live evidence: `npm ci`, `npm test` (7/7), exact `npm run build`, and `npm run test:e2e` (18/18) pass; CSV download, core flows, share/recovery, offline reload, keyboard focus, reduced motion, 390px overflow, headers, and same-origin-only requests pass. Lighthouse mobile on live: Performance 96, Accessibility 100, LCP 1,811 ms, CLS 0. Remaining non-blocking defects include sub-44px mobile targets and missing 404/metadata/copy-audit artifacts.
+
+See [`.factory/verification-3.md`](verification-3.md) for exact reproductions, evidence, severity, and required remediation. The historical build/repair notes below do not supersede this current FAIL.
 
 ## Repair verification status — PASS locally (2026-08-28)
 
