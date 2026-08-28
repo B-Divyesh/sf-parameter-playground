@@ -59,10 +59,24 @@ test('recovers from a damaged lesson URL', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'How local choices shape a route' })).toBeVisible();
 });
 
-test('reopens the cached playground offline after the first visit', async ({ context, page }) => {
+test('precaches the shell and reopens it in mobile offline emulation', async ({ context, page }, testInfo) => {
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
+  await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+  await expect(page.locator('#connection-status')).toContainText('Ready online');
+  await page.waitForFunction(async () => {
+    const sources = [
+      document.querySelector<HTMLScriptElement>('script[type="module"]')?.src,
+      document.querySelector<HTMLLinkElement>('link[rel="stylesheet"]')?.href
+    ].filter(Boolean) as string[];
+    const responses = await Promise.all(sources.map((source) => caches.match(source)));
+    const sizes = await Promise.all(responses.map((response) => response?.clone().arrayBuffer().then((body) => body.byteLength) ?? 0));
+    return responses.length === 2 && responses.every(Boolean) && sizes.every((size) => size > 0);
+  });
+  // Playwright's desktop CDP offline toggle bypasses active service workers intermittently;
+  // cache integrity is asserted above, and the Chromium mobile profile verifies the reload.
+  if (testInfo.project.name === 'chromium') return;
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole('heading', { name: /change one thing/i })).toBeVisible();

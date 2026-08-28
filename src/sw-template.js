@@ -2,7 +2,11 @@ const CACHE = '__CACHE__';
 const SHELL = __SHELL__;
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((cache) => Promise.all(SHELL.map(async (url) => {
+    const response = await fetch(new Request(url, { cache: 'reload' }));
+    if (!response.ok) throw new Error(`Could not cache ${url}`);
+    await cache.put(url, response);
+  }))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {

@@ -20,7 +20,7 @@ function offlineShell(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'sw.js',
-        source: template.replace('__CACHE__', 'parameter-playground-v2').replace('__SHELL__', JSON.stringify([...new Set(shell)]))
+        source: template.replace('__CACHE__', 'parameter-playground-v3').replace('__SHELL__', JSON.stringify([...new Set(shell)]))
       });
     }
   };
