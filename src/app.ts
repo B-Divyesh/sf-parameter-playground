@@ -414,9 +414,10 @@ function exportCsv(): void {
 
 function updateConnection(): void {
   const status = $('#connection-status');
+  const text = $('#connection-status-text');
   const online = navigator.onLine;
   status.classList.toggle('is-offline', !online);
-  status.lastChild!.textContent = online ? ' Ready online' : ' Offline — saved shell ready';
+  text.textContent = online ? ' Ready online' : ' Offline — saved shell ready';
 }
 
 function bindEvents(): void {

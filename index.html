@@ -62,7 +62,7 @@
             <h2 id="workbench-title">Build a model lesson</h2>
           </div>
           <div class="workbench-actions">
-            <span class="connection-status" id="connection-status"><span aria-hidden="true"></span> Checking connection…</span>
+            <span class="connection-status" id="connection-status"><span class="connection-indicator" aria-hidden="true"></span><span id="connection-status-text"> Checking connection…</span></span>
             <button class="button button-secondary" id="share-button" type="button">Copy lesson link</button>
           </div>
         </div>
@@ -204,6 +204,23 @@
       <nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-parameter-playground">Source</a></nav>
       <p class="generated-note">Opening illustration generated for this project with Azure AI; no stock assets.</p>
     </footer>
+    <script>
+      // Keep the cached shell's connection message truthful even while its module
+      // bundle is still starting after an offline reload.
+      (() => {
+        const updateConnection = () => {
+          const status = document.getElementById('connection-status');
+          const text = document.getElementById('connection-status-text');
+          if (!status || !text) return;
+          const offline = !navigator.onLine;
+          status.classList.toggle('is-offline', offline);
+          text.textContent = offline ? ' Offline — saved shell ready' : ' Ready online';
+        };
+        window.addEventListener('online', updateConnection);
+        window.addEventListener('offline', updateConnection);
+        updateConnection();
+      })();
+    </script>
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>

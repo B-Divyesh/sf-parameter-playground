@@ -91,7 +91,10 @@ test('precaches the shell and reopens it in mobile offline emulation', async ({ 
   // cache integrity is asserted above, and the Chromium mobile profile verifies the reload.
   if (testInfo.project.name === 'chromium') return;
   await context.setOffline(true);
-  await page.reload();
-  await expect(page.getByRole('heading', { name: /change one thing/i })).toBeVisible();
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  // This status is initialized in the HTML shell, before the cached module
+  // finishes booting, so an offline reload cannot be left at “Checking”.
   await expect(page.locator('#connection-status')).toContainText('Offline');
+  await expect(page.locator('#parameter-controls input')).toHaveCount(6);
+  await expect(page.getByRole('heading', { name: /change one thing/i })).toBeVisible();
 });
