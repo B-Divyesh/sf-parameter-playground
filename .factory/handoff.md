@@ -1,5 +1,14 @@
 # Parameter Playground — build handoff
 
+## Independent verification status — FAIL (2026-08-28)
+
+Candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`
+Live URL: <https://parameter-playground.sociobot.in>
+
+The live deployment now matches the candidate byte-for-byte for the HTML, JS, CSS, service worker, and legal pages; the earlier deployment-only lag is resolved. Clean install, all unit/release-policy tests, exact production build, all 16 project Playwright tests, independent live axe, desktop/mobile/keyboard/reduced-motion/offline checks, privacy/network review, response headers, and static bundle budgets passed.
+
+**Release verdict: FAIL.** The documented **Export CSV** control announces a successful export but triggers no browser download in independent live Chromium testing (30-second download-event timeout). This medium-severity defect must be repaired and covered by an end-to-end download test before release. A low-severity hardening gap also remains: live responses lack a Content-Security-Policy header. Full evidence is in [`.factory/verification-2.md`](verification-2.md).
+
 ## Repair verification status — PASS locally (2026-08-28)
 
 Work order: `parameter-playground-repair-2`  
