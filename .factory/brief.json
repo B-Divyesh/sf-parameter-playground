@@ -1,0 +1,11 @@
+{
+  "slug": "parameter-playground",
+  "title": "Parameter Playground",
+  "territory": "games-creative",
+  "user": "Teachers and self-learners explaining algorithms or mathematical models who need an honest interactive visual that changes with parameters and exposes failed intuitions.",
+  "smallest_useful_product": "Static-web builder for a small library of parameterized simulations: slider/table inputs, deterministic seed, accessible data table and narration fields, prediction prompt, and shareable preset URL.",
+  "success_measure": "A teacher publishes a reusable simulation in under one hour, and 80% of learners can state one changed parameter and its observed effect after a session.",
+  "artifact_class": "static-web",
+  "monetization": "free",
+  "constraints": "Use vetted deterministic model templates; show assumptions and numeric limits; require text alternatives for every visual; no unbounded user code."
+}
