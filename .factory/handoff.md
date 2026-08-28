@@ -30,6 +30,14 @@ The verifier's low-severity response-hardening observation is also closed: Azure
 - Production budgets: JS **20,035 B**, CSS **18,481 B**, fonts **109,604 B**, mobile hero **55,878 B**, desktop hero **149,478 B**. Lighthouse mobile: **100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**, LCP **1.8 s**, CLS **0**, total blocking time **0 ms**.
 - Package/consumer, server API, rate-limit, and identity-provider checks are not applicable to this static, no-account web artifact. `dist/index.html` is present at the required deployment root.
 
+### Deployment and live verification
+
+- Repair commit `93d57b2` was pushed to `origin/main` and deployed with the factory static deployment configuration to the existing `sf-parameter-playground` Azure Static Web App. Azure deployment ID: `91177c8d-1669-46e3-b00e-8ead1e02e2f6`.
+- Live <https://parameter-playground.sociobot.in> serves `main-D6NY7dNh.js` and `style-Ef9YcjUI.css`. SHA-256 hashes match the local build byte-for-byte for `index.html`, `sw.js`, both hashed assets, and both legal pages.
+- The verifier's exact live failure now passes: Chromium received `projectile-seed-41723.csv` (383 bytes), and its bytes exactly matched every displayed table heading and cell before the success status was checked.
+- Live `verify-url.sh` passed with HTTP 200, all structural checks, and zero console/page errors. A separate live axe scan found zero violations; desktop keyboard focus, 390px overflow, same-origin-only requests, active versioned cache, `registration.update()`, and the six-control offline reload all passed.
+- Live responses include the new restrictive CSP; the hashed JS response has `Cache-Control: public, max-age=31536000, immutable`. No release-blocking gaps remain.
+
 ## Independent verification status — FAIL (2026-08-28)
 
 Candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`
