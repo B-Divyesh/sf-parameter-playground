@@ -1,8 +1,32 @@
 # Parameter Playground — build handoff
 
-## Independent verification status — FAIL (2026-08-28)
+## Repair verification status — PASS locally (2026-08-28)
 
-Candidate `4cb098a8c96be17bb9c8ac60db36f5af9bca2a8f` was independently verified against `https://parameter-playground.sociobot.in/`. The deployment exactly matches the candidate's built HTML and JS, and normal production/offline behavior works. However, release approval is **FAIL** because the repository's required aggregate quality gate (`npm run check`) reproducibly fails its own mobile offline Playwright assertion (13/14 browser tests pass; `#connection-status` remains `Checking connection…` in the Vite-preview offline case). Production hashed CSS/JS also have only `max-age=30`, not immutable long-lived caching. See [.factory/verification.md](verification.md) for commands, exact evidence, all passed checks, and the defect list. This supersedes the prior builder “Final verification” claim below; no product source was changed during verification.
+Work order: `parameter-playground-repair-2`  
+Repair commits: `d9da3f4` and `1bd0b9c`
+
+All release-blocking findings in the independent report for candidate `4cb098a8c96be17bb9c8ac60db36f5af9bca2a8f` are repaired without changing the researched brief or the passed simulation behavior:
+
+- **Offline mobile quality gate:** the service worker now reads and writes only the current release cache, preventing a cached navigation from being paired with an arbitrary cache entry. The HTML shell also initializes the connection indicator synchronously, before the cached module bundle starts. This removes the observed `Checking connection…` race on an offline reload.
+- **Exact numeric validation:** blank/non-numeric exact values retain the previous valid value and provide a visible polite inline error associated with the field.
+- **Immutable static assets:** `public/staticwebapp.config.json` sets `Cache-Control: public, max-age=31536000, immutable` for `/assets/*`; the navigation fallback explicitly excludes those assets. This is covered by the release-policy unit test and ships in `dist/staticwebapp.config.json`.
+
+### Exact regression coverage
+
+- The Playwright offline case now reloads at `domcontentloaded`, asserts that the cached shell immediately says `Offline`, then asserts all six parameter inputs render and the workbench heading is visible at the 390×844 mobile profile.
+- The numeric-control browser regression verifies a blank Cities exact input restores `12` and exposes the complete inline error sentence.
+- The release-policy unit test asserts both the immutable `/assets/*` header and the fallback exclusion.
+
+### Verification evidence
+
+- Clean install: `npm ci` on Node/npm supplied by the worker; audit reported **0 vulnerabilities**.
+- Aggregate gate: `npm run check` passed — Vitest **6/6**, TypeScript production build, and Playwright **16/16** across desktop and 390px mobile (including axe serious/critical scan, keyboard-operable controls, share/recovery, invalid-number, and offline shell).
+- Production build: `dist/` created with `index.html` at its root. Initial JS is **19,960 B** and CSS **18,481 B** uncompressed; self-hosted fonts total **109,604 B**; mobile/desktop hero assets are **55,878 B / 149,478 B**.
+- Browser smoke check against Vite preview at desktop 1440×900 and mobile 390×844: title and `lang=en` present, one `h1`, one `main`, every image has `alt`, zero horizontal overflow, and no console/page errors.
+- Privacy/network source audit: only same-origin service-worker requests and the documented `parameter-playground-draft` local-storage key; no analytics, trackers, external fonts, scripts, or APIs.
+- Response policy: built configuration contains the immutable asset rule plus `nosniff`, strict-origin referrer policy, and disabled camera/microphone/geolocation permissions.
+
+The independent verification report remains at [.factory/verification.md](verification.md) as the original finding record. Deployment verification is recorded after the static deployment receives the pushed commits.
 
 Work order: `parameter-playground-build-1`  
 Completed: 2026-08-28
