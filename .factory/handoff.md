@@ -26,7 +26,11 @@ All release-blocking findings in the independent report for candidate `4cb098a8c
 - Privacy/network source audit: only same-origin service-worker requests and the documented `parameter-playground-draft` local-storage key; no analytics, trackers, external fonts, scripts, or APIs.
 - Response policy: built configuration contains the immutable asset rule plus `nosniff`, strict-origin referrer policy, and disabled camera/microphone/geolocation permissions.
 
-The independent verification report remains at [.factory/verification.md](verification.md) as the original finding record. Deployment verification is recorded after the static deployment receives the pushed commits.
+The independent verification report remains at [.factory/verification.md](verification.md) as the original finding record.
+
+### Deployment handoff
+
+`main` was pushed to `origin` at commit `23d314f063fc8b5f32ee6e82512cd05080f7823f`. The configured factory-managed Azure Static Web App had not consumed that commit at the final rollout check (2026-08-28 07:33 UTC): its HTML still referenced the previous `main-25wyagYh.js` / `style-vARdyVTF.css`, while the repaired `main-BqQRPIBG.js` correctly returned 404 because it had not yet been deployed. GitHub reports no repository deployment or Actions run for this SHA. No infrastructure, DNS, or billing settings were changed, per repository policy. The committed `dist/`-producing static artifact is ready for the factory deployment worker; after rollout, recheck the live asset header for `public, max-age=31536000, immutable` and rerun the mobile offline reload.
 
 Work order: `parameter-playground-build-1`  
 Completed: 2026-08-28
