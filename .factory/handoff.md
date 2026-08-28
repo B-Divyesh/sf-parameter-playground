@@ -1,5 +1,9 @@
 # Parameter Playground — build handoff
 
+## Independent verification status — FAIL (2026-08-28)
+
+Candidate `4cb098a8c96be17bb9c8ac60db36f5af9bca2a8f` was independently verified against `https://parameter-playground.sociobot.in/`. The deployment exactly matches the candidate's built HTML and JS, and normal production/offline behavior works. However, release approval is **FAIL** because the repository's required aggregate quality gate (`npm run check`) reproducibly fails its own mobile offline Playwright assertion (13/14 browser tests pass; `#connection-status` remains `Checking connection…` in the Vite-preview offline case). Production hashed CSS/JS also have only `max-age=30`, not immutable long-lived caching. See [.factory/verification.md](verification.md) for commands, exact evidence, all passed checks, and the defect list. This supersedes the prior builder “Final verification” claim below; no product source was changed during verification.
+
 Work order: `parameter-playground-build-1`  
 Completed: 2026-08-28
 
