@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "vitest run tests/models.test.ts",
+    "test": "vitest run tests/models.test.ts tests/release-policy.test.ts",
     "test:e2e": "playwright test",
     "check": "npm test && npm run build && npm run test:e2e"
   },

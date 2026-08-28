@@ -188,15 +188,17 @@ function renderControls(): void {
     number.type = 'number'; number.id = `number-${definition.key}`;
     number.min = String(definition.min); number.max = String(definition.max); number.step = String(definition.step); number.value = String(state.params[definition.key]);
     number.setAttribute('aria-label', `${definition.label} exact value`);
-    number.setAttribute('aria-describedby', `hint-${definition.key}`);
+    number.setAttribute('aria-describedby', `hint-${definition.key} error-${definition.key}`);
     const update = (raw: string, source: HTMLInputElement) => {
       const value = Number(raw);
-      if (!Number.isFinite(value)) {
-        source.setCustomValidity('Enter a number within the shown limits.');
-        source.reportValidity();
+      const error = document.querySelector<HTMLElement>(`#error-${definition.key}`)!;
+      if (!raw.trim() || !Number.isFinite(value)) {
+        source.value = String(state.params[definition.key]);
+        error.textContent = `${definition.label} needs a number from ${definition.min} to ${definition.max}${definition.unit ? ` ${definition.unit}` : ''}. The previous value was kept.`;
+        error.hidden = false;
         return;
       }
-      source.setCustomValidity('');
+      error.hidden = true;
       const bounded = Math.min(definition.max, Math.max(definition.min, value));
       state.params[definition.key] = bounded;
       if (definition.key === 'cities') {
@@ -223,7 +225,12 @@ function renderControls(): void {
     const hint = el('small');
     hint.id = `hint-${definition.key}`;
     hint.textContent = `${definition.hint} Range ${definition.min}–${definition.max}${definition.unit ? ` ${definition.unit}` : ''}.`;
-    group.append(heading, controls, hint);
+    const error = el('p', 'parameter-error');
+    error.id = `error-${definition.key}`;
+    error.setAttribute('role', 'status');
+    error.setAttribute('aria-live', 'polite');
+    error.hidden = true;
+    group.append(heading, controls, hint, error);
     container.append(group);
 
     const option = el('option');

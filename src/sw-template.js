@@ -15,11 +15,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
-  event.respondWith(caches.match(event.request).then((cached) => {
+  event.respondWith(caches.open(CACHE).then((cache) => cache.match(event.request).then((cached) => {
     const fetched = fetch(event.request).then((response) => {
-      if (response.ok) caches.open(CACHE).then((cache) => cache.put(event.request, response.clone()));
+      if (response.ok) cache.put(event.request, response.clone());
       return response;
-    }).catch(() => cached || (event.request.mode === 'navigate' ? caches.match('/') : Promise.reject(new Error('offline'))));
+    }).catch(() => cached || (event.request.mode === 'navigate' ? cache.match('/') : Promise.reject(new Error('offline'))));
     return cached || fetched;
-  }));
+  })));
 });

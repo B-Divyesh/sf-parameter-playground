@@ -59,6 +59,19 @@ test('recovers from a damaged lesson URL', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'How local choices shape a route' })).toBeVisible();
 });
 
+test('keeps the previous exact value and announces a blank numeric entry', async ({ page }) => {
+  await page.goto('/');
+  const cities = page.getByRole('spinbutton', { name: 'Cities exact value' });
+  await cities.fill('12');
+  await cities.dispatchEvent('change');
+  await expect(cities).toHaveValue('12');
+  await cities.fill('');
+  await cities.dispatchEvent('change');
+  await expect(cities).toHaveValue('12');
+  await expect(page.locator('#error-cities')).toHaveText('Cities needs a number from 5 to 16. The previous value was kept.');
+  await expect(page.locator('#error-cities')).toBeVisible();
+});
+
 test('precaches the shell and reopens it in mobile offline emulation', async ({ context, page }, testInfo) => {
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);

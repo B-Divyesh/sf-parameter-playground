@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 function offlineShell(): Plugin {
   return {
@@ -16,11 +17,14 @@ function offlineShell(): Plugin {
         '/assets/blueprint-workbench-960.webp', '/assets/blueprint-workbench-1536.webp',
         ...generated
       ];
+      // A cache name derived from this release prevents a cache-first reload from
+      // mixing an older HTML shell with this release's hashed entry modules.
+      const cacheName = `parameter-playground-${createHash('sha256').update(JSON.stringify(shell)).digest('hex').slice(0, 12)}`;
       const template = readFileSync(resolve(__dirname, 'src/sw-template.js'), 'utf8');
       this.emitFile({
         type: 'asset',
         fileName: 'sw.js',
-        source: template.replace('__CACHE__', 'parameter-playground-v3').replace('__SHELL__', JSON.stringify([...new Set(shell)]))
+        source: template.replace('__CACHE__', cacheName).replace('__SHELL__', JSON.stringify([...new Set(shell)]))
       });
     }
   };
