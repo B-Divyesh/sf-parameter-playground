@@ -4,6 +4,7 @@
     "exclude": ["/privacy/*", "/terms/*", "/assets/*", "/fonts/*", "*.css", "*.js", "*.svg", "*.webp"]
   },
   "globalHeaders": {
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'sha256-1WDHg2XbjhwOt6+QmTG5ebbaRFWDLwMn3nvac5mP248='; style-src 'self'; worker-src 'self'",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()"

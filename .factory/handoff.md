@@ -1,5 +1,35 @@
 # Parameter Playground — build handoff
 
+## Repair verification status — PASS locally (2026-08-28)
+
+Work order: `parameter-playground-repair-3`
+
+Verifier report commit: `2122300dff5498272878d88d0992c3fb158ad4e3`
+
+Failed candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`
+
+The release-blocking CSV export defect is repaired at its root. The download anchor is now attached to the document and its blob URL remains valid beyond the initiating click task before cleanup. The success status is emitted only after the browser-safe click initiation. This retains the existing deterministic model data, filename, and local-only behavior.
+
+The verifier's low-severity response-hardening observation is also closed: Azure Static Web Apps now sends a restrictive Content Security Policy. Scripts are limited to same-origin files plus the exact SHA-256 hash of the small inline offline-status bootstrap; `unsafe-inline` and `unsafe-eval` are not allowed. The same policy is applied by the production preview, so browser tests exercise it.
+
+### Exact regression coverage
+
+- The Playwright export test switches to Projectile motion, captures every displayed table heading and cell, waits for a real browser `download` event, verifies `projectile-seed-41723.csv`, compares the downloaded bytes with the displayed table, and only then checks the success status. It runs in desktop Chromium and the 390×844 mobile project.
+- The release-policy test derives the inline script's SHA-256 hash from `index.html` and requires it in the shipped CSP, along with restrictive default, object, and framing policies and no unsafe script exceptions.
+- Existing prediction → vary → inspect → explain, model bounds, share/recovery, numeric error, axe, responsive, and offline regressions remain unchanged and passing.
+
+### Verification evidence
+
+- Clean install: `npm ci` passed on Node `v22.23.2` / npm `10.9.8`; audit reported **0 vulnerabilities**.
+- Full gate: `npm run check` passed — Vitest **7/7**, TypeScript `tsc --noEmit`, Vite production build, and Playwright **18/18** across desktop and 390px mobile.
+- Factory `verify-url.sh` against the local production preview passed: HTTP 200, title, `lang=en`, one `h1`, `main`, all image alt text and button names, and **0 console/page errors**.
+- Accessibility/keyboard: axe reported **0 serious or critical violations** in both browser projects; Tab reached the skip link first with a solid 3px focus outline; ArrowRight changed the focused Clustering slider from 30 to 35; reduced-motion transition duration was `0.00001s`.
+- Responsive/offline/update: desktop and 390×844 page overflow were both **0px**; a service-worker-controlled mobile reload offline showed `Offline — saved shell ready` and all six inputs; the current versioned cache contained the shell and hashed JS/CSS, `registration.update()` completed, and no worker was waiting.
+- Privacy/network: **0 cross-origin runtime requests**, **0 console errors**, and the only local-storage key was the documented `parameter-playground-draft`. No analytics, trackers, external scripts/fonts, API, account, or payment flow exists.
+- Response policy: built `staticwebapp.config.json` includes CSP, `nosniff`, strict-origin referrer policy, disabled camera/microphone/geolocation, and immutable one-year caching for `/assets/*`.
+- Production budgets: JS **20,035 B**, CSS **18,481 B**, fonts **109,604 B**, mobile hero **55,878 B**, desktop hero **149,478 B**. Lighthouse mobile: **100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**, LCP **1.8 s**, CLS **0**, total blocking time **0 ms**.
+- Package/consumer, server API, rate-limit, and identity-provider checks are not applicable to this static, no-account web artifact. `dist/index.html` is present at the required deployment root.
+
 ## Independent verification status — FAIL (2026-08-28)
 
 Candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`

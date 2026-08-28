@@ -3,6 +3,11 @@ import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 
+const staticWebAppConfig = JSON.parse(readFileSync(resolve(__dirname, 'public/staticwebapp.config.json'), 'utf8')) as {
+  globalHeaders: Record<string, string>;
+};
+const contentSecurityPolicy = staticWebAppConfig.globalHeaders['Content-Security-Policy'];
+
 function offlineShell(): Plugin {
   return {
     name: 'offline-shell-manifest',
@@ -32,6 +37,7 @@ function offlineShell(): Plugin {
 
 export default defineConfig({
   plugins: [offlineShell()],
+  preview: { headers: { 'Content-Security-Policy': contentSecurityPolicy } },
   build: {
     target: 'es2022',
     outDir: 'dist',

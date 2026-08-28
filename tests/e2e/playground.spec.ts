@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readFile } from 'node:fs/promises';
 
 test('runs the prediction, parameter, inspection, and explanation loop', async ({ page }) => {
   await page.goto('/');
@@ -70,6 +71,28 @@ test('keeps the previous exact value and announces a blank numeric entry', async
   await expect(cities).toHaveValue('12');
   await expect(page.locator('#error-cities')).toHaveText('Cities needs a number from 5 to 16. The previous value was kept.');
   await expect(page.locator('#error-cities')).toBeVisible();
+});
+
+test('downloads the displayed data as CSV before confirming success', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /projectile motion/i }).click();
+
+  const headers = await page.locator('#data-table thead th').allTextContents();
+  const rows = await page.locator('#data-table tbody tr').evaluateAll((tableRows) => tableRows.map((row) =>
+    Array.from(row.querySelectorAll('td'), (cell) => cell.textContent ?? '')
+  ));
+  const quote = (value: string) => `"${value.replaceAll('"', '""')}"`;
+  const expectedCsv = [headers, ...rows].map((row) => row.map(quote).join(',')).join('\n');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export data as CSV' }).click();
+  const download = await downloadPromise;
+
+  expect(download.suggestedFilename()).toBe('projectile-seed-41723.csv');
+  const downloadPath = await download.path();
+  expect(downloadPath).not.toBeNull();
+  expect(await readFile(downloadPath!, 'utf8')).toBe(expectedCsv);
+  await expect(page.locator('#toast')).toHaveText('CSV exported with the values currently shown.');
 });
 
 test('precaches the shell and reopens it in mobile offline emulation', async ({ context, page }, testInfo) => {

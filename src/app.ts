@@ -408,8 +408,20 @@ function exportCsv(): void {
   result.rows.forEach((row) => lines.push(result.columns.map((column) => quote(String(row[column.key] ?? ''))).join(',')));
   const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
   const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob); link.download = `${state.template}-seed-${state.seed}.csv`; link.click();
-  URL.revokeObjectURL(link.href); showToast('CSV exported with the values currently shown.');
+  const downloadUrl = URL.createObjectURL(blob);
+  link.href = downloadUrl;
+  link.download = `${state.template}-seed-${state.seed}.csv`;
+  link.hidden = true;
+  document.body.append(link);
+  link.click();
+  showToast('CSV exported with the values currently shown.');
+
+  // WebKit and some hosted Chromium configurations cancel downloads when a
+  // detached anchor's object URL is revoked during the initiating click task.
+  window.setTimeout(() => {
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+  }, 1000);
 }
 
 function updateConnection(): void {
