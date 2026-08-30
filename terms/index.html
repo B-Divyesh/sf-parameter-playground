@@ -25,11 +25,12 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to terms</a>
+    <p class="visually-hidden" id="route-announcer" aria-live="polite" aria-atomic="true"></p>
     <header class="masthead"><a class="wordmark" href="/" aria-label="Parameter Playground home"><span class="wordmark-mark" aria-hidden="true">P<span>↗</span></span><span>Parameter Playground</span></a><nav aria-label="Primary navigation"><a href="/?demo=1#workbench">Demo</a><a href="/#workbench">Workbench</a><a href="/privacy/">Privacy</a></nav></header>
     <main id="main" class="legal-page">
       <a class="back-link" href="/">← Back to the playground</a>
       <p class="eyebrow">Terms · effective 28 August 2026</p>
-      <h1>Terms of use</h1>
+      <h1 tabindex="-1">Terms of use</h1>
       <p>Parameter Playground requires no payment. Use it lawfully and check model outputs before relying on them in teaching or other work.</p>
       <h2>Educational models, not real-world advice</h2>
       <p>The simulations are deliberately simplified. Each model shows its assumptions and numeric limits.</p>
@@ -44,5 +45,6 @@
       <p>The application source is available under the MIT License. The repository contains the full license text.</p>
     </main>
     <footer><p><strong>Parameter Playground</strong> keeps lesson drafts in this browser.</p><nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/" aria-current="page">Terms</a></nav><p class="factory-note">Built by Param Factory · Version 1.0.0</p></footer>
+    <script type="module" src="/src/route-focus.ts"></script>
   </body>
 </html>

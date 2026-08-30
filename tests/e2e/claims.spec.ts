@@ -29,6 +29,19 @@ test('@claim:demo-isolation keeps sample changes separate and discards them on e
   expect(await page.evaluate(() => localStorage.getItem('parameter-playground-draft'))).toBe(regularDraft);
 });
 
+test('@claim:demo-populated-workbench opens the complete route lesson from a clean state', async ({ page }) => {
+  await page.goto(demoUrl);
+  await expect(page.getByText('Demo — sample data, nothing is saved', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
+  await expect(page.getByLabel('Lesson title')).toHaveValue('How clustering changes a delivery route');
+  await expect(page.getByRole('heading', { name: 'How clustering changes a delivery route' })).toBeVisible();
+  await expect(page.locator('#parameter-controls input')).toHaveCount(6);
+  await expect(page.locator('#simulation-svg')).toBeVisible();
+  await expect(page.locator('#data-table tbody tr')).toHaveCount(9);
+  await expect(page.getByRole('heading', { name: 'Build a model lesson' })).toBeInViewport();
+});
+
 test('@claim:three-bounded-models opens all three templates with limits and output', async ({ page }) => {
   await page.goto(demoUrl);
   const models = [

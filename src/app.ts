@@ -603,5 +603,27 @@ function positionDemoWorkbench(): void {
   window.setTimeout(position, 100);
 }
 
+function focusRouteHeading(): void {
+  const heading = $('#page-title');
+  heading.focus({ preventScroll: true });
+  const announcement = isDemoMode
+    ? 'Demo sample lesson loaded.'
+    : location.hash === '#workbench'
+      ? 'Lesson builder loaded.'
+      : 'Parameter Playground home loaded.';
+  const announcer = $('#route-announcer');
+  announcer.textContent = '';
+  window.requestAnimationFrame(() => { announcer.textContent = announcement; });
+}
+
+function bindRouteFocus(): void {
+  window.addEventListener('hashchange', focusRouteHeading);
+  window.addEventListener('popstate', focusRouteHeading);
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) focusRouteHeading();
+  });
+  if (isDemoMode || location.hash === '#workbench') window.requestAnimationFrame(focusRouteHeading);
+}
+
 loadInitialState();
-renderModelOptions(); syncSetupFields(); renderControls(); renderLesson(); bindEvents(); updateConnection(); registerServiceWorker(); positionDemoWorkbench();
+renderModelOptions(); syncSetupFields(); renderControls(); renderLesson(); bindEvents(); bindRouteFocus(); updateConnection(); registerServiceWorker(); positionDemoWorkbench();

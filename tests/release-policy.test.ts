@@ -45,7 +45,7 @@ describe('static release policy', () => {
   it('uses the designed document for genuine 404 responses', () => {
     const config = readConfig();
     expect(config.responseOverrides['404']?.rewrite).toBe('/404.html');
-    expect(readFileSync(new URL('../404.html', import.meta.url), 'utf8')).toContain('<h1>This page does not exist</h1>');
+    expect(readFileSync(new URL('../404.html', import.meta.url), 'utf8')).toContain('<h1 tabindex="-1">This page does not exist</h1>');
   });
 
   it('ships complete route metadata and correctly sized touch art', () => {
@@ -87,5 +87,20 @@ describe('static release policy', () => {
     expect(demo).toContain('/?demo=1#workbench');
     expect(demo).toContain('demo:parameter-playground-draft');
     expect(audit).toContain('Flagged lines: 0');
+  });
+
+  it('keeps review-required labels concrete and removes public asset claims', () => {
+    const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+    const models = readFileSync(new URL('../src/models.ts', import.meta.url), 'utf8');
+    const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+    expect(home).toContain('Generate new seed');
+    expect(home).toContain('Close share dialog');
+    expect(home).not.toContain('SHEET 01 / REV A');
+    expect(home).not.toContain('generated for this project');
+    expect(models).toContain('This rule is quick, but it may not find the shortest route.');
+    expect(models).not.toContain('heuristic');
+    expect(readme).toContain('spoken results, measurements, a table of values, and a CSV download');
+    expect(readme).not.toContain('semantic data table');
+    expect(readme).not.toContain('generated specifically for this project');
   });
 });

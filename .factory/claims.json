@@ -7,6 +7,13 @@
     "sandbox": "fresh browser context with a sentinel regular draft; edit and reset demo; assert only demo: storage changes"
   },
   {
+    "id": "demo-populated-workbench",
+    "claim": "The one-click sample opens a complete route lesson.",
+    "where": "landing hero action, demo documentation, README",
+    "test": "npm run test:claims -- --grep @claim:demo-populated-workbench",
+    "sandbox": "fresh browser context; open ?demo=1#workbench and assert the demo banner, sample title, controls, chart, table, and visible workbench"
+  },
+  {
     "id": "three-bounded-models",
     "claim": "Includes three bounded model templates with assumptions and numeric limits.",
     "where": "workbench model picker, README",
@@ -78,7 +85,7 @@
   },
   {
     "id": "accessible-inspection",
-    "claim": "Every model has narrated results, a text description, and a semantic data table.",
+    "claim": "Every model has spoken results, a text description, and a properly labeled data table.",
     "where": "README, workbench",
     "test": "npm run test:claims -- --grep @claim:accessible-inspection",
     "sandbox": "open the demo, inspect chart naming and table semantics, and run axe against the rendered workbench"

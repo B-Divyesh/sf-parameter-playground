@@ -249,7 +249,7 @@ export const templates: Record<TemplateId, ModelTemplate> = {
   tour: {
     id: 'tour', shortName: 'Route', name: 'Nearest-neighbor tour', lesson: 'How local choices shape a route',
     assumption: 'Every city can connect to every other city. The route always chooses the nearest unvisited city, then returns to its start.',
-    limits: '5–16 cities; coordinates are synthetic 0–100 units. This heuristic is fast, but it does not guarantee the shortest possible tour.',
+    limits: '5–16 cities; coordinates are synthetic 0–100 units. This rule is quick, but it may not find the shortest route.',
     predictionPrompt: 'If the cities form tighter clusters, what will happen to route length and crossings?',
     description: 'A coordinate plane of labeled cities joined by a red nearest-neighbor route; pale dashed lines show all possible city pairs.',
     parameters: [

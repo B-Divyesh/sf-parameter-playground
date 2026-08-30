@@ -11,7 +11,7 @@ Sample demo: <https://parameter-playground.sociobot.in/?demo=1#workbench>
 - Three bounded templates cover nearest-neighbor tours, logistic growth, and ideal projectile motion.
 - The same seed and parameters reproduce the same displayed values.
 - Teachers can edit the title, prediction prompt, and required visual description.
-- Each model provides narrated results, metrics, a semantic data table, and CSV export.
+- Each model provides spoken results, measurements, a table of values, and a CSV download.
 - A copied link restores the lesson settings without a server account.
 - Learners can complete the prediction and explanation flow without an account or payment.
 - Regular drafts stay in browser local storage and survive a refresh.
@@ -65,7 +65,7 @@ Draft lesson settings stay in browser local storage. Shared lesson settings live
 
 The app adds no accounts, analytics, ads, tracking pixels, or third-party runtime requests. See the [privacy page](https://parameter-playground.sociobot.in/privacy/) for details.
 
-The opening blueprint illustration was generated specifically for this project using the factory Azure AI image model. Its source, prompt sidecar, and provenance are in `assets/src/` and `.factory/design.md`. Atkinson Hyperlegible is self-hosted from the SIL Open Font License release distributed by Google Fonts.
+Atkinson Hyperlegible is self-hosted from the SIL Open Font License release distributed by Google Fonts.
 
 ## License
 

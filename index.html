@@ -27,6 +27,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to playground</a>
+    <p class="visually-hidden" id="route-announcer" aria-live="polite" aria-atomic="true"></p>
     <header class="masthead">
       <a class="wordmark" href="/" aria-label="Parameter Playground home">
         <span class="wordmark-mark" aria-hidden="true">P<span>↗</span></span>
@@ -37,7 +38,6 @@
         <a href="#workbench">Workbench</a>
         <a href="/privacy/">Privacy</a>
       </nav>
-      <span class="sheet-code" aria-hidden="true">SHEET 01 / REV A</span>
     </header>
 
     <aside class="demo-banner" id="demo-banner" aria-label="Demo controls" hidden>
@@ -55,7 +55,7 @@
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
           <p class="eyebrow">Parameter simulations for lessons</p>
-          <h1 id="page-title">Test how one parameter<br /><em>changes a model</em></h1>
+          <h1 id="page-title" tabindex="-1">Test how one parameter<br /><em>changes a model</em></h1>
           <p class="lede">For teachers and self-learners who need predictions, inspectable numbers, and lessons others can replay.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="/?demo=1#workbench">Try it with sample data <span aria-hidden="true">→</span></a>
@@ -172,7 +172,7 @@
                 <small id="seed-hint">Same seed + parameters = same result.</small>
               </div>
               <input id="seed-input" type="number" min="1" max="999999" step="1" inputmode="numeric" aria-describedby="seed-hint seed-error" />
-              <button class="button button-secondary" id="new-seed" type="button">New seed</button>
+              <button class="button button-secondary" id="new-seed" type="button">Generate new seed</button>
               <p class="parameter-error seed-error" id="seed-error" role="status" aria-live="polite" hidden></p>
             </div>
             <p class="live-update" id="live-update" aria-live="polite"></p>
@@ -232,14 +232,13 @@
         <p>Clipboard access is unavailable. Select and copy this URL manually.</p>
         <label for="share-url">Shareable URL</label>
         <input id="share-url" readonly />
-        <button class="button button-primary" value="close">Done</button>
+        <button class="button button-primary" value="close">Close share dialog</button>
       </form>
     </dialog>
     <footer>
       <p><strong>Parameter Playground</strong> keeps lesson drafts in this browser.</p>
       <nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-parameter-playground">Source (external)</a></nav>
       <p class="factory-note">Built by Param Factory · Version 1.0.0</p>
-      <p class="generated-note">The opening illustration was generated for this project with Azure AI.</p>
     </footer>
     <script>
       // Keep the cached shell's connection message truthful even while its module

@@ -27,6 +27,31 @@ test('opens a direct demo URL with the populated workbench in the first viewport
   })).toBeLessThan(160);
 });
 
+test('moves focus to the route heading and announces Demo, Privacy, and Back navigation', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: /try it with sample data/i }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await expect(page.locator('#route-announcer')).toHaveText('Demo sample lesson loaded.');
+
+  await page.locator('footer').getByRole('link', { name: 'Privacy' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Privacy' })).toBeFocused();
+  await expect(page.locator('#route-announcer')).toHaveText('Privacy loaded.');
+
+  await page.goBack();
+  await expect(page).toHaveTitle('Demo — Parameter Playground');
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await expect(page.locator('#route-announcer')).toHaveText('Demo sample lesson loaded.');
+
+  for (const destination of [
+    { route: '/terms/', heading: 'Terms of use', announcement: 'Terms of use loaded.' },
+    { route: '/404.html', heading: 'This page does not exist', announcement: 'This page does not exist loaded.' }
+  ]) {
+    await page.goto(destination.route);
+    await expect(page.getByRole('heading', { level: 1, name: destination.heading })).toBeFocused();
+    await expect(page.locator('#route-announcer')).toHaveText(destination.announcement);
+  }
+});
+
 test('keeps the product facts in the first desktop and mobile viewport', async ({ page }) => {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
