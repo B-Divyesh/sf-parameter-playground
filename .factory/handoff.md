@@ -1,140 +1,49 @@
-# Parameter Playground — verification handoff
+# Parameter Playground — repair 4 handoff
 
-## Current independent verification status — FAIL (2026-08-28)
+- Work order: `parameter-playground-repair-4`
+- Verifier report: commit `7ec7fbceb9c82f36eb562926e3704f1dfd59940a`
+- Failed candidate: `70da583734f6ad38748918285ba23bb606c80d36`
+- Completed locally: 2026-08-30
 
-Tested candidate: `70da583734f6ad38748918285ba23bb606c80d36`
-Live URL: <https://parameter-playground.sociobot.in>
+## What was repaired
 
-**Do not release this candidate.** Fresh byte-for-byte comparison confirms that live is this commit, not a deployment-only lag. The release has no required `.factory/claims.json` or claim-test commands, and it has no one-click isolated **Try it with sample data** demo. `/demo` and `?demo=1` are the ordinary app and write to `parameter-playground-draft`, not a `demo:` namespace. The cold first screen also fails to name teachers/self-learners in plain words.
+- Added the required `.factory/claims.json` with 11 visitor-facing claims. Each claim has one unique `@claim:<id>` Playwright regression that starts from the sample demo.
+- Added the one-click `/?demo=1#workbench` sandbox. It loads a complete route lesson, uses only `demo:parameter-playground-draft`, never reads or writes the regular draft, and provides **Reset demo** and **Start for real**.
+- Rewrote the first screen to name teachers and self-learners, state the job in seven words, expose the required sample action, and show three tested facts.
+- Raised all visible 390px interactive targets to at least 44×44 CSS pixels. The regression checks every visible link, button, input, textarea, select, and summary.
+- Added canonical, Open Graph, Twitter, apple-touch, and route-specific title metadata. The original product art now supplies a 1200×630 social image and 180×180 touch icon.
+- Removed the catch-all navigation fallback that turned unknown URLs into the home page. Azure Static Web Apps now rewrites genuine 404 responses to the designed `/404.html`; local preview mirrors the 404 status.
+- Added `.factory/demo.md` and `.factory/copy-audit.md`. The rendered copy has no sentence over 22 words and no banned marketing term.
+- Corrected the hero image's responsive height. This keeps all three required facts in the first desktop and 390px viewport.
+- Made demo deep links position the populated workbench below the persistent demo banner after fonts and layout settle.
 
-Fresh local and live evidence: `npm ci`, `npm test` (7/7), exact `npm run build`, and `npm run test:e2e` (18/18) pass; CSV download, core flows, share/recovery, offline reload, keyboard focus, reduced motion, 390px overflow, headers, and same-origin-only requests pass. Lighthouse mobile on live: Performance 96, Accessibility 100, LCP 1,811 ms, CLS 0. Remaining non-blocking defects include sub-44px mobile targets and missing 404/metadata/copy-audit artifacts.
+All previously passing behavior remains covered: three deterministic models, numeric recovery, prediction and explanation, lesson sharing, clipboard fallback, CSV bytes, keyboard sliders, local drafts, corrupt-link recovery, CSP, immutable hashed assets, and offline reload/update behavior.
 
-See [`.factory/verification-3.md`](verification-3.md) for exact reproductions, evidence, severity, and required remediation. The historical build/repair notes below do not supersede this current FAIL.
+## Exact regression coverage
 
-## Repair verification status — PASS locally (2026-08-28)
+- `tests/e2e/claims.spec.ts`: demo isolation, three bounded models, deterministic seed, lesson editing, shared presets, CSV bytes, regular local drafts, no-account/payment flow, same-origin privacy, dedicated-context offline reload, and accessible inspection.
+- `tests/e2e/verifier-regressions.spec.ts`: first-read copy and CTA, direct-demo viewport, first-screen facts, 44px target geometry, true 404 response, keyboard navigation, and axe scans for legal/404 routes.
+- `tests/release-policy.test.ts`: immutable assets, restrictive CSP, 404 response configuration, complete metadata/art sizes, one-to-one claims/tests, and required demo/copy documentation.
+- Existing model and browser regressions remain unchanged except for opening the renamed real-work action and running CSV export from the demo entry point.
 
-Work order: `parameter-playground-repair-3`
+## Local verification evidence
 
-Verifier report commit: `2122300dff5498272878d88d0992c3fb158ad4e3`
+- Clean install: `npm ci` passed on Node `v22.23.2` and npm `10.9.8`; audit reported 0 vulnerabilities.
+- Full gate: `npm run check` passed — Vitest 11/11, TypeScript and Vite production build, Playwright 54/54 across desktop Chromium and 390×844 mobile.
+- Factory URL verifier passed for `/` and `/?demo=1#workbench`: HTTP 200, route-specific title, `lang=en`, one `h1`, one `main`, 0 missing image alternatives, 0 unnamed buttons, and 0 console/page errors.
+- Accessibility: Playwright axe found 0 serious/critical violations on home, demo, privacy, terms, and 404 pages. Keyboard tests cover the skip link and ArrowRight slider operation. Reduced motion, inline form errors, and dialog names remain covered.
+- Responsive: no page-level horizontal overflow; every visible 390px target is at least 44×44 CSS pixels. Visual inspection covered home and populated demo at 1440×900 and 390×844.
+- Privacy: the full demo flow made only same-origin static GET requests. Demo and regular local-storage namespaces were tested with a sentinel regular draft. No analytics, ads, trackers, runtime APIs, external fonts, or third-party scripts exist.
+- Offline/update: a dedicated fresh context loaded the demo online, verified the active versioned cache, switched offline, reloaded the cached shell, showed `Offline — saved shell ready`, and rendered all six route controls.
+- Response policy: local preview sends the restrictive CSP, `nosniff`, strict-origin referrer policy, disabled camera/microphone/geolocation policy, immutable one-year hashed-asset caching, and a genuine 404 status.
+- Lighthouse mobile: 100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO; FCP 1.0s, LCP 1.8s, CLS 0, total blocking time 0ms.
+- Production sizes: initial JS 21,720 B; CSS 20,663 B; fonts 109,604 B; mobile hero 55,878 B; desktop hero 149,478 B. All component budgets pass.
+- `dist/index.html` exists at the required static deployment root. Package-consumer, backend API, rate-limit, payment-provider, persistence-concurrency, and identity-provider checks do not apply to this static, no-account product.
 
-Failed candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`
+## Deployment
 
-The release-blocking CSV export defect is repaired at its root. The download anchor is now attached to the document and its blob URL remains valid beyond the initiating click task before cleanup. The success status is emitted only after the browser-safe click initiation. This retains the existing deterministic model data, filename, and local-only behavior.
+The repair source is ready for the existing factory-managed Azure Static Web App `sf-parameter-playground` in resource group `sociobot`. Deployment and live byte-identity evidence will be appended after the repair commit is pushed.
 
-The verifier's low-severity response-hardening observation is also closed: Azure Static Web Apps now sends a restrictive Content Security Policy. Scripts are limited to same-origin files plus the exact SHA-256 hash of the small inline offline-status bootstrap; `unsafe-inline` and `unsafe-eval` are not allowed. The same policy is applied by the production preview, so browser tests exercise it.
+## Known gaps and next steps
 
-### Exact regression coverage
-
-- The Playwright export test switches to Projectile motion, captures every displayed table heading and cell, waits for a real browser `download` event, verifies `projectile-seed-41723.csv`, compares the downloaded bytes with the displayed table, and only then checks the success status. It runs in desktop Chromium and the 390×844 mobile project.
-- The release-policy test derives the inline script's SHA-256 hash from `index.html` and requires it in the shipped CSP, along with restrictive default, object, and framing policies and no unsafe script exceptions.
-- Existing prediction → vary → inspect → explain, model bounds, share/recovery, numeric error, axe, responsive, and offline regressions remain unchanged and passing.
-
-### Verification evidence
-
-- Clean install: `npm ci` passed on Node `v22.23.2` / npm `10.9.8`; audit reported **0 vulnerabilities**.
-- Full gate: `npm run check` passed — Vitest **7/7**, TypeScript `tsc --noEmit`, Vite production build, and Playwright **18/18** across desktop and 390px mobile.
-- Factory `verify-url.sh` against the local production preview passed: HTTP 200, title, `lang=en`, one `h1`, `main`, all image alt text and button names, and **0 console/page errors**.
-- Accessibility/keyboard: axe reported **0 serious or critical violations** in both browser projects; Tab reached the skip link first with a solid 3px focus outline; ArrowRight changed the focused Clustering slider from 30 to 35; reduced-motion transition duration was `0.00001s`.
-- Responsive/offline/update: desktop and 390×844 page overflow were both **0px**; a service-worker-controlled mobile reload offline showed `Offline — saved shell ready` and all six inputs; the current versioned cache contained the shell and hashed JS/CSS, `registration.update()` completed, and no worker was waiting.
-- Privacy/network: **0 cross-origin runtime requests**, **0 console errors**, and the only local-storage key was the documented `parameter-playground-draft`. No analytics, trackers, external scripts/fonts, API, account, or payment flow exists.
-- Response policy: built `staticwebapp.config.json` includes CSP, `nosniff`, strict-origin referrer policy, disabled camera/microphone/geolocation, and immutable one-year caching for `/assets/*`.
-- Production budgets: JS **20,035 B**, CSS **18,481 B**, fonts **109,604 B**, mobile hero **55,878 B**, desktop hero **149,478 B**. Lighthouse mobile: **100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO**, LCP **1.8 s**, CLS **0**, total blocking time **0 ms**.
-- Package/consumer, server API, rate-limit, and identity-provider checks are not applicable to this static, no-account web artifact. `dist/index.html` is present at the required deployment root.
-
-### Deployment and live verification
-
-- Repair commit `93d57b2` was pushed to `origin/main` and deployed with the factory static deployment configuration to the existing `sf-parameter-playground` Azure Static Web App. Azure deployment ID: `91177c8d-1669-46e3-b00e-8ead1e02e2f6`.
-- Live <https://parameter-playground.sociobot.in> serves `main-D6NY7dNh.js` and `style-Ef9YcjUI.css`. SHA-256 hashes match the local build byte-for-byte for `index.html`, `sw.js`, both hashed assets, and both legal pages.
-- The verifier's exact live failure now passes: Chromium received `projectile-seed-41723.csv` (383 bytes), and its bytes exactly matched every displayed table heading and cell before the success status was checked.
-- Live `verify-url.sh` passed with HTTP 200, all structural checks, and zero console/page errors. A separate live axe scan found zero violations; desktop keyboard focus, 390px overflow, same-origin-only requests, active versioned cache, `registration.update()`, and the six-control offline reload all passed.
-- Live responses include the new restrictive CSP; the hashed JS response has `Cache-Control: public, max-age=31536000, immutable`. No release-blocking gaps remain.
-
-## Independent verification status — FAIL (2026-08-28)
-
-Candidate: `20a9e97670288bcb40b477390bd3f5134765fa3b`
-Live URL: <https://parameter-playground.sociobot.in>
-
-The live deployment now matches the candidate byte-for-byte for the HTML, JS, CSS, service worker, and legal pages; the earlier deployment-only lag is resolved. Clean install, all unit/release-policy tests, exact production build, all 16 project Playwright tests, independent live axe, desktop/mobile/keyboard/reduced-motion/offline checks, privacy/network review, response headers, and static bundle budgets passed.
-
-**Release verdict: FAIL.** The documented **Export CSV** control announces a successful export but triggers no browser download in independent live Chromium testing (30-second download-event timeout). This medium-severity defect must be repaired and covered by an end-to-end download test before release. A low-severity hardening gap also remains: live responses lack a Content-Security-Policy header. Full evidence is in [`.factory/verification-2.md`](verification-2.md).
-
-## Repair verification status — PASS locally (2026-08-28)
-
-Work order: `parameter-playground-repair-2`  
-Repair commits: `d9da3f4` and `1bd0b9c`
-
-All release-blocking findings in the independent report for candidate `4cb098a8c96be17bb9c8ac60db36f5af9bca2a8f` are repaired without changing the researched brief or the passed simulation behavior:
-
-- **Offline mobile quality gate:** the service worker now reads and writes only the current release cache, preventing a cached navigation from being paired with an arbitrary cache entry. The HTML shell also initializes the connection indicator synchronously, before the cached module bundle starts. This removes the observed `Checking connection…` race on an offline reload.
-- **Exact numeric validation:** blank/non-numeric exact values retain the previous valid value and provide a visible polite inline error associated with the field.
-- **Immutable static assets:** `public/staticwebapp.config.json` sets `Cache-Control: public, max-age=31536000, immutable` for `/assets/*`; the navigation fallback explicitly excludes those assets. This is covered by the release-policy unit test and ships in `dist/staticwebapp.config.json`.
-
-### Exact regression coverage
-
-- The Playwright offline case now reloads at `domcontentloaded`, asserts that the cached shell immediately says `Offline`, then asserts all six parameter inputs render and the workbench heading is visible at the 390×844 mobile profile.
-- The numeric-control browser regression verifies a blank Cities exact input restores `12` and exposes the complete inline error sentence.
-- The release-policy unit test asserts both the immutable `/assets/*` header and the fallback exclusion.
-
-### Verification evidence
-
-- Clean install: `npm ci` on Node/npm supplied by the worker; audit reported **0 vulnerabilities**.
-- Aggregate gate: `npm run check` passed — Vitest **6/6**, TypeScript production build, and Playwright **16/16** across desktop and 390px mobile (including axe serious/critical scan, keyboard-operable controls, share/recovery, invalid-number, and offline shell).
-- Production build: `dist/` created with `index.html` at its root. Initial JS is **19,960 B** and CSS **18,481 B** uncompressed; self-hosted fonts total **109,604 B**; mobile/desktop hero assets are **55,878 B / 149,478 B**.
-- Browser smoke check against Vite preview at desktop 1440×900 and mobile 390×844: title and `lang=en` present, one `h1`, one `main`, every image has `alt`, zero horizontal overflow, and no console/page errors.
-- Privacy/network source audit: only same-origin service-worker requests and the documented `parameter-playground-draft` local-storage key; no analytics, trackers, external fonts, scripts, or APIs.
-- Response policy: built configuration contains the immutable asset rule plus `nosniff`, strict-origin referrer policy, and disabled camera/microphone/geolocation permissions.
-
-The independent verification report remains at [.factory/verification.md](verification.md) as the original finding record.
-
-### Deployment handoff
-
-`main` was pushed to `origin` at commit `23d314f063fc8b5f32ee6e82512cd05080f7823f`. The configured factory-managed Azure Static Web App had not consumed that commit at the final rollout check (2026-08-28 07:33 UTC): its HTML still referenced the previous `main-25wyagYh.js` / `style-vARdyVTF.css`, while the repaired `main-BqQRPIBG.js` correctly returned 404 because it had not yet been deployed. GitHub reports no repository deployment or Actions run for this SHA. No infrastructure, DNS, or billing settings were changed, per repository policy. The committed `dist/`-producing static artifact is ready for the factory deployment worker; after rollout, recheck the live asset header for `public, max-age=31536000, immutable` and rerun the mobile offline reload.
-
-Work order: `parameter-playground-build-1`  
-Completed: 2026-08-28
-
-## What shipped
-
-- A complete static lesson builder around the pedagogical sequence predict → vary → inspect → explain.
-- Three vetted, deterministic, bounded model templates:
-  - nearest-neighbor travelling-salesperson heuristic with seeded city layouts, clustering, route length, crossings, and full visit data;
-  - discrete logistic population growth with rate, carrying capacity, duration, and full step data;
-  - ideal projectile motion with angle, speed, gravity, range, peak, flight time, and sampled trajectory data.
-- Teacher editing for lesson title, prediction prompt, and required visual description. Drafts persist only in local storage.
-- Shareable presets encoded completely in the URL; malformed and out-of-range presets recover safely.
-- Keyboard-operable range and exact-number inputs, prediction commitment, structured explanation completion, CSV export, live status narration, SVG chart descriptions, and accessible data tables.
-- Responsive blueprint-drafting visual system, including a reviewed original Azure AI illustration, self-hosted Atkinson Hyperlegible fonts, designed focus states, and reduced-motion handling.
-- Offline shell with a build-time manifest of the exact hashed assets, plus online/offline feedback.
-- `/privacy/`, `/terms/`, robots, sitemap, Azure Static Web Apps configuration, MIT license, and updated README.
-
-## Run and verify
-
-```sh
-npm install
-npm test
-npm run build
-npm run test:e2e
-```
-
-The exact deploy command is `npm run build`. It creates `dist/index.html` at the required static deployment root.
-
-Final verification:
-
-- `npm test`: 5/5 deterministic model tests passed.
-- `npm run test:e2e`: 14 browser tests cover desktop and 390px mobile flows, template switching, prediction/explanation, axe, responsive overflow, share round-trip, corrupt URL recovery, and an offline reload.
-- Factory `verify-url.sh`: HTTP 200; no console/page errors; title, `lang`, one `h1`, `main`, image alt text, and button names confirmed.
-- `npm audit`: 0 vulnerabilities.
-- Production budgets: 19.65 KB uncompressed JS, 18.36 KB CSS, 109.6 KB total fonts, 55.9 KB mobile hero WebP (149.5 KB desktop hero).
-- Lighthouse mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.8 s, CLS 0, total blocking time 0 ms, total transfer 180 KiB. INP is not available in a synthetic no-interaction Lighthouse run; the measured blocking-time proxy is 0 ms.
-
-## Known limits
-
-- The three templates are intentionally simplified teaching models, not optimization, population-forecasting, engineering, or safety tools. Assumptions and numeric bounds are shown in-product.
-- Shared links are transparent URL payloads rather than private records. Teachers should not put student or confidential data in lesson fields.
-- Learner answers are intentionally ephemeral and are not submitted or graded; this preserves the no-account, local-first scope.
-
-## Sensible next steps
-
-- Classroom-test whether learners can correctly name a parameter and observed effect; the product goal is at least 80% after a session.
-- Add more vetted templates only when each can supply bounded controls, deterministic output, a meaningful data table, assumptions, and an authored text alternative.
-- If private class libraries become valuable, design them as an optional authenticated product rather than weakening public-link privacy.
+No release-blocking or minor verifier finding remains locally. The researched success measure still requires classroom observation; it cannot be established by a software test.

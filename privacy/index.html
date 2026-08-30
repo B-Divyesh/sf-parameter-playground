@@ -5,26 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f3f0df" />
     <meta name="description" content="Parameter Playground privacy policy." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Privacy — Parameter Playground" />
+    <meta property="og:description" content="How Parameter Playground stores lesson drafts and handles network requests." />
+    <meta property="og:url" content="https://parameter-playground.sociobot.in/privacy/" />
+    <meta property="og:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A drafting sheet showing graph nodes connected by a route." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Privacy — Parameter Playground" />
+    <meta name="twitter:description" content="How Parameter Playground stores lesson drafts and handles network requests." />
+    <meta name="twitter:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
     <title>Privacy — Parameter Playground</title>
+    <link rel="canonical" href="https://parameter-playground.sociobot.in/privacy/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to privacy policy</a>
-    <header class="masthead"><a class="wordmark" href="/"><span class="wordmark-mark" aria-hidden="true">P<span>↗</span></span><span>Parameter Playground</span></a></header>
+    <header class="masthead"><a class="wordmark" href="/" aria-label="Parameter Playground home"><span class="wordmark-mark" aria-hidden="true">P<span>↗</span></span><span>Parameter Playground</span></a><nav aria-label="Primary navigation"><a href="/?demo=1#workbench">Demo</a><a href="/#workbench">Workbench</a><a href="/terms/">Terms</a></nav></header>
     <main id="main" class="legal-page">
       <a class="back-link" href="/">← Back to the playground</a>
       <p class="eyebrow">Plain-language policy · effective 28 August 2026</p>
       <h1>Privacy</h1>
-      <p>Parameter Playground is local-first. You can use every model without an account, analytics identifier, or server-side lesson database.</p>
+      <p>Parameter Playground keeps drafts in your browser. You can use every model without an account, analytics identifier, or server-side lesson database.</p>
       <h2>What stays on your device</h2>
-      <p>The lesson title, prompt, chart description, model parameters, and seed are saved in your browser’s local storage so your draft survives a refresh. Learner prediction and explanation text remains only in the current page and is not stored. You can erase the saved draft by clearing site data in your browser.</p>
+      <p>Your lesson title, prompt, chart description, parameters, and seed are saved in local storage. This lets your draft survive a refresh.</p>
+      <p>Learner prediction and explanation text stays only on the current page. Clear this site’s browser data to erase a saved draft.</p>
+      <p>The sample demo uses a separate <code>demo:</code> storage key. Leaving the demo removes that sample key and never changes your regular draft.</p>
       <h2>What a shared link contains</h2>
-      <p>When you copy a lesson link, its lesson settings are encoded directly in the URL. Anyone you give the URL to can read those settings. Do not put student names, private class information, or sensitive information in lesson fields.</p>
+      <p>A copied lesson link contains its settings directly in the URL. Anyone with the URL can read those settings.</p>
+      <p>Do not put student names, private class information, or sensitive information in lesson fields.</p>
       <h2>Network and offline use</h2>
-      <p>The host necessarily receives ordinary web request information such as IP address, time, and requested file in short-lived infrastructure logs. The app does not add analytics, advertising, tracking pixels, or third-party scripts. A service worker caches the app on your device for offline use.</p>
+      <p>The host receives ordinary request details such as IP address, time, and requested file in short-lived infrastructure logs.</p>
+      <p>The app adds no analytics, advertising, tracking pixels, or third-party scripts. A service worker caches the app for offline use.</p>
       <h2>Questions</h2>
       <p>Open an issue in the public source repository for privacy questions or deletion guidance.</p>
     </main>
+    <footer><p><strong>Parameter Playground</strong> keeps lesson drafts in this browser.</p><nav aria-label="Legal and project links"><a href="/privacy/" aria-current="page">Privacy</a><a href="/terms/">Terms</a></nav><p class="factory-note">Built by Param Factory · Version 1.0.0</p></footer>
   </body>
 </html>

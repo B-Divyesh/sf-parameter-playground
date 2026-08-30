@@ -29,10 +29,12 @@ Motion is sparse and explanatory: 180ms control feedback and a 240ms opacity/str
 
 ## Original asset plan and provenance
 
-- `public/assets/blueprint-workbench.webp`: a wide, text-free editorial still-life of drafting tools and a route sketch, used in the opening sheet with explicit dimensions. It clarifies the product metaphor but never substitutes for the live simulation.
+- `public/assets/blueprint-workbench-960.webp` and `public/assets/blueprint-workbench-1536.webp`: responsive crops of a wide, text-free editorial still-life of drafting tools and a route sketch. It clarifies the product metaphor but never substitutes for the live simulation.
+- `public/assets/social-preview.jpg`: a 1200×630 center crop derived from the same original illustration. `public/apple-touch-icon.png` is a 180×180 crop from that original art. Neither derivative introduces third-party material.
 - Generation prompt (use case `scientific-educational`): “Website hero margin illustration for an accessible algorithm simulation builder. Overhead view of a cream drafting sheet on a deep navy architect desk, precise cyan graph nodes connected by one red-orange route, brass compass, transparent ruler, graphite pencil, subtle measurement ticks and paper fibers. Calm editorial gouache with crisp technical ink, flat perspective, restrained blueprint palette (#f3f0df, #102d3d, #087b93, #c84b31), directional desk light, generous negative space, no people. No text, no letters, no numerals, no watermark, no logos, no UI screenshot, no gradients.”
 - Generator: Azure AI Foundry `factory-image` via `/opt/fleet/lib/gen-image.sh`; generated 2026-08-28. Original project asset, no third-party source material. The source PNG and prompt sidecar are retained under `assets/src/`; the optimized WebP ships.
 - Interface icons are small, hand-authored inline SVG marks (share, reset, link) using the same stroke grammar.
+- Demo mode uses a pale cyan drafting notice with the same square controls and ink outlines. It stays visually distinct without adding a second product theme.
 
 ## State design
 

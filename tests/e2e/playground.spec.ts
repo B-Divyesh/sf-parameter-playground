@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 test('runs the prediction, parameter, inspection, and explanation loop', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: /open the workbench/i }).click();
+  await page.getByRole('link', { name: /start with your own lesson/i }).click();
   await expect(page.getByRole('heading', { name: 'Build a model lesson' })).toBeVisible();
   await page.getByLabel('My prediction').fill('I predict clustering will shorten the route.');
   await page.getByRole('button', { name: 'Commit prediction' }).click();
@@ -74,7 +74,7 @@ test('keeps the previous exact value and announces a blank numeric entry', async
 });
 
 test('downloads the displayed data as CSV before confirming success', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?demo=1#workbench');
   await page.getByRole('button', { name: /projectile motion/i }).click();
 
   const headers = await page.locator('#data-table thead th').allTextContents();
@@ -119,5 +119,5 @@ test('precaches the shell and reopens it in mobile offline emulation', async ({ 
   // finishes booting, so an offline reload cannot be left at “Checking”.
   await expect(page.locator('#connection-status')).toContainText('Offline');
   await expect(page.locator('#parameter-controls input')).toHaveCount(6);
-  await expect(page.getByRole('heading', { name: /change one thing/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /test how one parameter/i })).toBeVisible();
 });

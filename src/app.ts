@@ -29,6 +29,19 @@ const defaultState = (templateId: TemplateId = 'tour'): LessonState => {
   };
 };
 
+const isDemoMode = new URLSearchParams(location.search).get('demo') === '1';
+const REAL_STORAGE_KEY = 'parameter-playground-draft';
+const DEMO_STORAGE_KEY = 'demo:parameter-playground-draft';
+
+const sampleDemoState = (): LessonState => ({
+  template: 'tour',
+  title: 'How clustering changes a delivery route',
+  prompt: 'If city clusters tighten, what happens to route length and crossings?',
+  description: 'Nine labeled cities joined by a red nearest-neighbor route. Pale dashed lines show every possible city pair.',
+  seed: 41723,
+  params: { cities: 9, cluster: 65, start: 2 }
+});
+
 function safeText(value: unknown, fallback: string, max: number): string {
   return typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : fallback;
 }
@@ -71,6 +84,19 @@ let lastParameter = 'cities';
 let renderTimer = 0;
 
 function loadInitialState(): void {
+  if (isDemoMode) {
+    state = sampleDemoState();
+    document.title = 'Demo — Parameter Playground';
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', 'https://parameter-playground.sociobot.in/?demo=1');
+    $('#demo-banner').hidden = false;
+    try {
+      const draft = localStorage.getItem(DEMO_STORAGE_KEY);
+      if (draft) state = decodeLesson(draft);
+    } catch {
+      // The sample remains usable when browser storage is unavailable.
+    }
+    return;
+  }
   const encoded = new URLSearchParams(location.search).get('lesson');
   const notice = $('#url-notice');
   if (encoded) {
@@ -88,7 +114,7 @@ function loadInitialState(): void {
     return;
   }
   try {
-    const draft = localStorage.getItem('parameter-playground-draft');
+    const draft = localStorage.getItem(REAL_STORAGE_KEY);
     if (draft) state = decodeLesson(draft);
   } catch {
     // Storage may be unavailable; the live page remains fully usable.
@@ -97,7 +123,7 @@ function loadInitialState(): void {
 
 function persistDraft(): void {
   try {
-    localStorage.setItem('parameter-playground-draft', encodeLesson(state));
+    localStorage.setItem(isDemoMode ? DEMO_STORAGE_KEY : REAL_STORAGE_KEY, encodeLesson(state));
   } catch {
     showToast('Draft could not be saved in this browser. The playground still works.');
   }
@@ -334,7 +360,7 @@ function renderLesson(announce = false): void {
   const template = currentTemplate();
   result = template.calculate(state.params, state.seed);
   $('#active-lesson-title').textContent = state.title;
-  $('#drawing-number').textContent = `MODEL / ${template.shortName.toUpperCase()} / ${String(state.seed).slice(-3).padStart(3, '0')}`;
+  $('#drawing-number').textContent = `Model: ${template.shortName} · Seed: ${state.seed}`;
   $('#active-assumption').textContent = template.assumption;
   $('#active-limits').textContent = `${template.limits} Seed: ${state.seed}. ${template.assumption}`;
   $('#learner-prompt').textContent = state.prompt;
@@ -368,6 +394,7 @@ function validateSetup(): boolean {
 
 function lessonUrl(): string {
   const url = new URL(location.href);
+  url.pathname = '/';
   url.search = '';
   url.hash = 'workbench';
   url.searchParams.set('lesson', encodeLesson(state));
@@ -400,6 +427,22 @@ function resetParameters(): void {
   lastParameter = currentTemplate().parameters[0]?.key ?? '';
   renderControls(); renderLesson(true); persistDraft();
   showToast('Parameters returned to this model’s starter values.');
+}
+
+function resetDemo(): void {
+  if (!isDemoMode) return;
+  try { localStorage.removeItem(DEMO_STORAGE_KEY); } catch { /* The in-memory reset still works. */ }
+  state = sampleDemoState();
+  lastParameter = 'cities';
+  const prediction = $('#prediction-answer') as HTMLTextAreaElement;
+  prediction.value = '';
+  prediction.readOnly = false;
+  $('#lock-prediction').textContent = 'Commit prediction';
+  $('#prediction-state').textContent = 'Not committed yet';
+  ($('#observed-effect') as HTMLTextAreaElement).value = '';
+  $('#explanation-state').textContent = 'Explanation not complete';
+  syncSetupFields(); renderModelOptions(); renderControls(); renderLesson();
+  showToast('The sample lesson returned to its starting values.');
 }
 
 function exportCsv(): void {
@@ -465,6 +508,10 @@ function bindEvents(): void {
     $('#explanation-state').textContent = `Complete: you changed ${parameter?.toLowerCase()} and named an effect.`;
   });
   $('#export-csv').addEventListener('click', exportCsv);
+  $('#reset-demo').addEventListener('click', resetDemo);
+  $('#start-real').addEventListener('click', () => {
+    try { localStorage.removeItem(DEMO_STORAGE_KEY); } catch { /* Navigation still leaves the demo. */ }
+  });
   window.addEventListener('online', updateConnection); window.addEventListener('offline', updateConnection);
 }
 
@@ -472,5 +519,20 @@ function registerServiceWorker(): void {
   if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => showToast('Offline setup was unavailable; the live playground still works.'));
 }
 
+function positionDemoWorkbench(): void {
+  if (!isDemoMode || location.hash !== '#workbench') return;
+  const position = () => {
+    const banner = $('#demo-banner');
+    const workbench = $('#workbench');
+    const top = workbench.getBoundingClientRect().top + window.scrollY - banner.getBoundingClientRect().height;
+    document.documentElement.classList.add('positioning-demo');
+    window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+    window.requestAnimationFrame(() => document.documentElement.classList.remove('positioning-demo'));
+  };
+  window.requestAnimationFrame(position);
+  document.fonts.ready.then(position);
+  window.setTimeout(position, 100);
+}
+
 loadInitialState();
-renderModelOptions(); syncSetupFields(); renderControls(); renderLesson(); bindEvents(); updateConnection(); registerServiceWorker();
+renderModelOptions(); syncSetupFields(); renderControls(); renderLesson(); bindEvents(); updateConnection(); registerServiceWorker(); positionDemoWorkbench();

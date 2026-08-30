@@ -1,0 +1,79 @@
+[
+  {
+    "id": "demo-isolation",
+    "claim": "The sample demo never reads or writes the visitor's regular draft.",
+    "where": "demo banner, README, privacy page",
+    "test": "npm run test:claims -- --grep @claim:demo-isolation",
+    "sandbox": "fresh browser context with a sentinel regular draft; edit and reset demo; assert only demo: storage changes"
+  },
+  {
+    "id": "three-bounded-models",
+    "claim": "Includes three bounded model templates with assumptions and numeric limits.",
+    "where": "landing facts, README",
+    "test": "npm run test:claims -- --grep @claim:three-bounded-models",
+    "sandbox": "open every template from the demo and verify controls, bounds, assumptions, and output rows"
+  },
+  {
+    "id": "deterministic-seed",
+    "claim": "The same seed and parameters produce the same displayed values.",
+    "where": "workbench, README",
+    "test": "npm run test:claims -- --grep @claim:deterministic-seed",
+    "sandbox": "set sample parameters and seed, change the seed, restore it, and compare every table cell"
+  },
+  {
+    "id": "lesson-editing",
+    "claim": "Teachers can edit the lesson title, prediction prompt, and required chart description.",
+    "where": "workbench, README",
+    "test": "npm run test:claims -- --grep @claim:lesson-editing",
+    "sandbox": "edit all three fields in the demo and verify the learner heading, prompt, and chart text alternative update"
+  },
+  {
+    "id": "shareable-preset",
+    "claim": "Copies a lesson link that restores the model, lesson text, seed, and parameters.",
+    "where": "workbench, README, privacy page",
+    "test": "npm run test:claims -- --grep @claim:shareable-preset",
+    "sandbox": "edit the demo, copy its URL, open it in a clean page, and assert restored lesson state"
+  },
+  {
+    "id": "csv-export",
+    "claim": "Exports the displayed model values as CSV.",
+    "where": "workbench, README",
+    "test": "npm run test:claims -- --grep @claim:csv-export",
+    "sandbox": "download from the demo and compare the file name and bytes with every displayed heading and row"
+  },
+  {
+    "id": "local-draft",
+    "claim": "Regular lesson settings stay in browser local storage and survive a refresh.",
+    "where": "footer, README, privacy page",
+    "test": "npm run test:claims -- --grep @claim:local-draft",
+    "sandbox": "start from demo, leave for real mode, edit a lesson, reload, and inspect the namespaced local key"
+  },
+  {
+    "id": "no-account-payment",
+    "claim": "All model and learner flows work without an account or payment.",
+    "where": "landing facts, README, terms page",
+    "test": "npm run test:claims -- --grep @claim:no-account-payment",
+    "sandbox": "complete the sample learner loop and open all models without authentication or payment UI"
+  },
+  {
+    "id": "same-origin-privacy",
+    "claim": "The app adds no analytics, ads, tracking pixels, or third-party runtime requests.",
+    "where": "README, privacy page",
+    "test": "npm run test:claims -- --grep @claim:same-origin-privacy",
+    "sandbox": "record all requests during a full demo flow and allow only same-origin static resources"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "landing facts, README, terms page",
+    "test": "npm run test:claims -- --grep @claim:offline-reload",
+    "sandbox": "fresh dedicated browser context; load demo online, wait for cached assets, go offline, reload, and use the sample"
+  },
+  {
+    "id": "accessible-inspection",
+    "claim": "Every model has narrated results, a text description, and a semantic data table.",
+    "where": "README, workbench",
+    "test": "npm run test:claims -- --grep @claim:accessible-inspection",
+    "sandbox": "open the demo, inspect chart naming and table semantics, and run axe against the rendered workbench"
+  }
+]

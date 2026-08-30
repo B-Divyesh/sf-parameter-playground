@@ -4,9 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f3f0df" />
-    <meta name="description" content="Build accessible, shareable parameter simulations that ask learners to predict, vary, inspect, and explain." />
-    <title>Parameter Playground — test an intuition</title>
+    <meta name="description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Parameter Playground" />
+    <meta property="og:title" content="Parameter Playground — test model changes" />
+    <meta property="og:description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta property="og:url" content="https://parameter-playground.sociobot.in/" />
+    <meta property="og:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A drafting sheet showing graph nodes connected by a route." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Parameter Playground — test model changes" />
+    <meta name="twitter:description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta name="twitter:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
+    <title>Parameter Playground — test model changes</title>
+    <link rel="canonical" href="https://parameter-playground.sociobot.in/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href="/fonts/AtkinsonHyperlegible-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="/fonts/AtkinsonHyperlegible-Bold.ttf" as="font" type="font/ttf" crossorigin />
   </head>
@@ -18,20 +33,40 @@
         <span>Parameter Playground</span>
       </a>
       <nav aria-label="Primary navigation">
+        <a href="/?demo=1#workbench">Demo</a>
         <a href="#workbench">Workbench</a>
-        <a href="#method">Method</a>
+        <a href="/privacy/">Privacy</a>
       </nav>
       <span class="sheet-code" aria-hidden="true">SHEET 01 / REV A</span>
     </header>
 
+    <aside class="demo-banner" id="demo-banner" aria-label="Demo controls" hidden>
+      <div>
+        <strong>Demo — sample data, nothing is saved</strong>
+        <span>Your regular draft stays untouched.</span>
+      </div>
+      <div class="demo-actions">
+        <button class="text-button" id="reset-demo" type="button">Reset demo</button>
+        <a class="button button-secondary" id="start-real" href="/#workbench">Start for real</a>
+      </div>
+    </aside>
+
     <main id="main">
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
-          <p class="eyebrow">A classroom instrument for testable ideas</p>
-          <h1 id="page-title">Change one thing.<br /><em>See what follows.</em></h1>
-          <p class="lede">Build a deterministic model lesson with a prediction prompt, inspectable numbers, and a link learners can replay—no account or code required.</p>
-          <a class="button button-primary" href="#workbench">Open the workbench <span aria-hidden="true">↓</span></a>
-          <p class="hero-note"><span aria-hidden="true">⌁</span> Three vetted models · works offline after first visit</p>
+          <p class="eyebrow">Parameter simulations for lessons</p>
+          <h1 id="page-title">Test how one parameter<br /><em>changes a model</em></h1>
+          <p class="lede">For teachers and self-learners who need predictions, inspectable numbers, and lessons others can replay.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="/?demo=1#workbench">Try it with sample data <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#workbench">Start with your own lesson <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="action-note">The sample opens as a complete route lesson.</p>
+          <ul class="hero-facts" aria-label="Product facts">
+            <li>Three bounded models</li>
+            <li>No account or payment</li>
+            <li>Works offline after first visit</li>
+          </ul>
         </div>
         <figure class="hero-figure">
           <picture>
@@ -44,8 +79,8 @@
 
       <section class="method-strip" id="method" aria-labelledby="method-title">
         <div>
-          <p class="eyebrow">The method</p>
-          <h2 id="method-title">Make the thinking visible</h2>
+          <p class="eyebrow">How it works</p>
+          <h2 id="method-title">Predict, change, inspect, explain</h2>
         </div>
         <ol>
           <li><span>01</span><strong>Predict</strong><small>Commit before changing</small></li>
@@ -58,7 +93,7 @@
       <section class="workbench" id="workbench" aria-labelledby="workbench-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Live drafting sheet</p>
+            <p class="eyebrow">Lesson builder</p>
             <h2 id="workbench-title">Build a model lesson</h2>
           </div>
           <div class="workbench-actions">
@@ -152,13 +187,13 @@
               <figure class="simulation-figure" aria-labelledby="chart-title chart-caption">
                 <div class="figure-heading">
                   <strong id="chart-title">Simulation plot</strong>
-                  <span>LIVE OUTPUT</span>
+                  <span>UPDATES WITH PARAMETERS</span>
                 </div>
                 <svg id="simulation-svg" viewBox="0 0 720 440" role="img" aria-describedby="chart-caption"></svg>
                 <figcaption id="chart-caption"></figcaption>
               </figure>
               <div class="data-sheet">
-                <div class="figure-heading"><strong>Underlying values</strong><span>SCREEN-READER READY</span></div>
+                <div class="figure-heading"><strong>Underlying values</strong><span>VALUES BEHIND THE CHART</span></div>
                 <p class="table-hint" id="table-hint">Scroll sideways to inspect all columns on a small screen.</p>
                 <div class="table-scroll" tabindex="0" role="region" aria-label="Simulation data table" aria-describedby="table-hint">
                   <table id="data-table"></table>
@@ -200,9 +235,10 @@
       </form>
     </dialog>
     <footer>
-      <p><strong>Parameter Playground</strong> is a free, local-first teaching tool.</p>
-      <nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-parameter-playground">Source</a></nav>
-      <p class="generated-note">Opening illustration generated for this project with Azure AI; no stock assets.</p>
+      <p><strong>Parameter Playground</strong> keeps lesson drafts in this browser.</p>
+      <nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-parameter-playground">Source (external)</a></nav>
+      <p class="factory-note">Built by Param Factory · Version 1.0.0</p>
+      <p class="generated-note">The opening illustration was generated for this project with Azure AI.</p>
     </footer>
     <script>
       // Keep the cached shell's connection message truthful even while its module
