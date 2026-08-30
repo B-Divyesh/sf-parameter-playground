@@ -1,10 +1,8 @@
-# Parameter Playground — polish 2 handoff
+# Parameter Playground — verification 8 handoff
 
 ## Result: PASS
 
-Repair commits: `bb9dec15ff752fdbb73a3036ed50add01c48ee91` and `3330e2c`. Production deployment `93151274-5868-4959-9c46-888af9bcb869` succeeded for `sf-parameter-playground`; <https://parameter-playground.sociobot.in/?demo=1#workbench> returned 200 after deployment.
-
-The phone demo now opens on a real sample result before any setup controls. It shows the authored lesson title, a parameter, route metric, and live chart preview. Demo social metadata, sitemap coverage, terminology, copy audit, and claims coverage are complete. The snapshot keeps the documented blueprint visual system; it only appears on narrow demo screens.
+Independent verification of candidate commit `7e77efc5d25bbab6c9341267a26ac9ef92d173de` completed on 2026-08-30 against <https://parameter-playground.sociobot.in/>. The live HTML references the same hashed application assets as a fresh local production build (`main-5KdcPbdQ.js`, `style-BHOwsWoV.css`, and `style-ZOr1aU46.js`).
 
 ## How to run and verify
 
@@ -14,18 +12,22 @@ npm test
 npm run build
 npm run test:claims
 npm run test:e2e
+PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e
 ```
 
-`npm run build` writes the static deployment artifact to `dist/`.
+`npm run build` writes the static artifact to `dist/`.
 
-## Exact evidence
+## Evidence
 
-- Fresh clone of final `main` at `/tmp/parameter-playground-polish2-final.*`: all 14 exact manifest claim commands ran separately after `npm ci`; 28/28 desktop/mobile executions passed.
-- Local: `npm test` passed 13/13; `npm run build` passed; `npm run test:claims` passed 28/28; `npm run test:e2e` passed 72/72.
-- Production: `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e` passed 72/72, including demo isolation, first-viewport sample content, routing/focus/Back, metadata/sitemap, privacy, offline reload, keyboard, 404, and axe checks.
-- Cold live verifier output: `/tmp/parameter-playground-polish2-live.jVN6pr/verify.json`; screenshots: `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-desktop.png` and `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-mobile.png`.
-- `@axe-core/cli` was attempted but its Selenium wrapper could not find Chrome in this container. The repository’s Playwright axe integration ran in the installed pinned Chromium and found no serious or critical findings locally and live.
+- Fresh `npm ci` completed with no vulnerabilities. Every one of the 14 commands declared in `.factory/claims.json` was then run separately from the demo entry point; all passed on both desktop and mobile (28 executions).
+- Local: `npm test` passed 13/13 tests; the exact production build passed; the complete `npm run test:e2e` suite passed 72/72.
+- Live: `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e` passed 72/72. It covered all claims, normal prediction/change/inspect/explain use, bounded models, blank/fractional/out-of-range recovery, share URLs, CSV bytes, local drafts, demo isolation/reset/exit, desktop and 390 px mobile, offline reload, routing/404, keyboard use, and axe.
+- Cold first read passed: the initial page says it tests how a parameter changes a model, names teachers and self-learners, and exposes one-click **Try it with sample data** with the result explained next to it.
+- Factory URL verifier evidence is in `.factory/verification-8-artifacts/verify-url/`: HTTP 200; no console errors; title, `lang=en`, one h1, main landmark, image alt text, and labeled buttons all passed.
+- Live browser request log used only `https://parameter-playground.sociobot.in`; the no-third-party privacy claim passed live. No console/page errors were observed.
+- Response headers include self-only CSP with `frame-ancestors 'none'`, HSTS, nosniff, strict-origin referrer policy, and permissions policy. Hashed assets are immutable for one year; HTML and service worker revalidate in 30 seconds. Unknown paths return the designed HTTP 404.
+- Build budget: main JS is 24,528 B raw / 9.01 kB gzip; total initial JS is well below 200 kB. CSS is 21,304 B raw / 5.59 kB gzip. The mobile hero asset is 55,878 B. The live 390 px page had no horizontal overflow; focused controls had a visible 3 px outline. In reduced-motion emulation there were no active animations.
 
 ## Known gaps
 
-None. `.factory/polish-2.md` maps every finding from reviews 1 and 2 to its implementation and evidence.
+None found. There are no server-side API endpoints, authentication, payment flow, or rate-limited API in this static product, so API allowance and Entra checks do not apply.
