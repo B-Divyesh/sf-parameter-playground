@@ -189,7 +189,7 @@ test('@claim:same-origin-privacy sends only same-origin static requests during t
 });
 
 test('@claim:offline-reload reopens the sample in a fresh offline context', async ({ browser }) => {
-  const context = await browser.newContext({ baseURL: 'http://127.0.0.1:4173', viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({ baseURL: appOrigin, viewport: { width: 390, height: 844 } });
   try {
     const page = await context.newPage();
     await page.goto(demoUrl);
