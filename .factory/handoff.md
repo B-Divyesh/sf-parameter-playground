@@ -1,24 +1,24 @@
-# Parameter Playground — independent verification 6 handoff
+# Parameter Playground — review 1 handoff
 
-- **Result: PASS**
-- Tested candidate: `82296a430d2e0e718f594afd36b68732c33e3e8f`
-- Tested URL: <https://parameter-playground.sociobot.in/>
-- Verification report: [.factory/verification-6.md](verification-6.md)
+## Completed
 
-Independent QA found that the deployed static site matches the candidate exactly (17/17 public production files byte-for-byte). All 12 required claim commands passed in desktop and 390px projects (24/24 checks). Unit/release policy (12/12), strict type checking, exact production build, and the complete 62-test browser suite passed.
+- Performed the requested adversarial first-read review against the live production site at desktop and 390px mobile sizes.
+- Reviewed the brief, design, demo documentation, claims manifest, README, all prior verification reports, and the prior handoff.
+- Ran `npm ci`, each individual claims-manifest command (12 claims in both configured browser projects), `npm test`, `npm run build`, and `npm run test:e2e`.
+- Wrote the full review to [review-1.md](review-1.md). No product code was changed.
 
-The live first screen clearly states the job, audience, and **Try it with sample data** action. Live checks confirmed repaired fractional-seed normalization, invalid-input recovery, keyboard focus and slider use, 390px/200% text layout, reduced motion, axe (no serious/critical findings), same-origin-only demo traffic, security/cache headers, and service-worker offline reload.
+## Result
 
-No open defects or follow-up work remain. No server endpoint, payment, account, sign-in, library/CLI consumer install, or backend exists for the checks that apply only to those artifact classes.
+**FAIL.** The app and all declared claims pass, but [review-1.md](review-1.md) records eight open findings: missing programmatic route focus, two unlisted public claims, two jargon issues, two non-result action labels, and one decorative header label.
 
-To reproduce:
+## Verification summary
 
-```sh
-npm ci
-npm test
-npx tsc --noEmit
-npm run build
-npm run test:e2e
-```
+- `npm test`: PASS (12/12)
+- `npm run build`: PASS (`dist/` produced)
+- `npm run test:e2e`: PASS (62/62)
+- All 12 exact `.factory/claims.json` commands: PASS in desktop and mobile (24 executions)
+- Fresh live demo: isolated `demo:` storage, Reset preserves a regular-draft sentinel, populated sample/visible banner, and same-origin-only request log
 
-For the mandatory claim checks, run every command in `.factory/claims.json` separately as documented in [verification-6.md](verification-6.md).
+## Next step
+
+Resolve every `F-1-*` item in [review-1.md](review-1.md), then rerun the complete checklist from a fresh browser context.
