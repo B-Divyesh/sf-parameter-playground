@@ -130,6 +130,41 @@ test('keeps the starting city within the current city count in every entry path'
   await expect(page.locator('#url-notice')).toContainText('Values outside this model’s limits were replaced.');
 });
 
+test('normalizes a fractional seed atomically across the lesson, draft, and shared link', async ({ context, page }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
+  await page.goto('/?demo=1#workbench');
+
+  const seed = page.getByRole('spinbutton', { name: 'Deterministic seed' });
+  await seed.fill('2.5');
+  await seed.dispatchEvent('change');
+
+  await expect(seed).toHaveValue('3');
+  expect(await seed.evaluate((input: HTMLInputElement) => ({
+    valid: input.validity.valid,
+    stepMismatch: input.validity.stepMismatch
+  }))).toEqual({ valid: true, stepMismatch: false });
+  await expect(page.locator('#seed-error')).toHaveText('Deterministic seed uses whole numbers. 2.5 was changed to 3.');
+  await expect(page.locator('#seed-error')).toBeVisible();
+  await expect(page.locator('#drawing-number')).toContainText('Seed: 3');
+  await expect(page.locator('#active-limits')).toContainText('Seed: 3.');
+  const normalizedRows = await page.locator('#data-table tbody').innerText();
+
+  const storedSeed = await page.evaluate(() => {
+    const encoded = localStorage.getItem('demo:parameter-playground-draft')!;
+    const padded = encoded.replaceAll('-', '+').replaceAll('_', '/') + '='.repeat((4 - encoded.length % 4) % 4);
+    return JSON.parse(atob(padded)).seed as number;
+  });
+  expect(storedSeed).toBe(3);
+
+  await page.getByRole('button', { name: 'Copy lesson link' }).click();
+  const url = await page.evaluate(() => navigator.clipboard.readText());
+  const restored = await context.newPage();
+  await restored.goto(url);
+  await expect(restored.getByRole('spinbutton', { name: 'Deterministic seed' })).toHaveValue('3');
+  await expect(restored.locator('#drawing-number')).toContainText('Seed: 3');
+  expect(await restored.locator('#data-table tbody').innerText()).toBe(normalizedRows);
+});
+
 test('keeps legal and not-found routes free of serious accessibility violations', async ({ page }) => {
   for (const route of ['/privacy/', '/terms/', '/404.html']) {
     await page.goto(route);

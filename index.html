@@ -169,10 +169,11 @@
             <div class="seed-control">
               <div>
                 <label for="seed-input">Deterministic seed</label>
-                <small>Same seed + parameters = same result.</small>
+                <small id="seed-hint">Same seed + parameters = same result.</small>
               </div>
-              <input id="seed-input" type="number" min="1" max="999999" inputmode="numeric" />
+              <input id="seed-input" type="number" min="1" max="999999" step="1" inputmode="numeric" aria-describedby="seed-hint seed-error" />
               <button class="button button-secondary" id="new-seed" type="button">New seed</button>
+              <p class="parameter-error seed-error" id="seed-error" role="status" aria-live="polite" hidden></p>
             </div>
             <p class="live-update" id="live-update" aria-live="polite"></p>
           </div>

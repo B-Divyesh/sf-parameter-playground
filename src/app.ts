@@ -71,7 +71,9 @@ function decodeLessonWithReport(encoded: string): { lesson: LessonState; correct
   const template = templates[templateId];
   const incoming = raw.params && typeof raw.params === 'object' ? raw.params : {};
   const normalized = normalizeParameters(template, incoming as Record<string, unknown>);
-  const seed = Number.isFinite(Number(raw.seed)) ? Math.min(999999, Math.max(1, Math.round(Number(raw.seed)))) : base.seed;
+  const rawSeed = Number(raw.seed);
+  const validSeed = Number.isFinite(rawSeed) && Number.isInteger(rawSeed) && rawSeed >= 1 && rawSeed <= 999999;
+  const seed = Number.isFinite(rawSeed) ? Math.min(999999, Math.max(1, Math.round(rawSeed))) : base.seed;
   return {
     lesson: {
       template: templateId,
@@ -81,7 +83,7 @@ function decodeLessonWithReport(encoded: string): { lesson: LessonState; correct
       seed,
       params: normalized.params
     },
-    corrected: normalized.corrected
+    corrected: validSeed ? normalized.corrected : [...normalized.corrected, 'seed']
   };
 }
 
@@ -535,11 +537,29 @@ function bindEvents(): void {
   });
   $('#seed-input').addEventListener('change', (event) => {
     const input = event.currentTarget as HTMLInputElement;
-    const candidate = Math.round(Number(input.value));
-    if (!Number.isFinite(candidate) || candidate < 1 || candidate > 999999) {
-      input.setCustomValidity('Use a whole number from 1 to 999999.'); input.reportValidity(); input.value = String(state.seed); return;
+    const raw = input.value;
+    const value = Number(raw);
+    const error = $('#seed-error');
+    if (!raw.trim() || !Number.isFinite(value) || value < 1 || value > 999999) {
+      input.value = String(state.seed);
+      input.setCustomValidity('');
+      error.textContent = 'Deterministic seed needs a whole number from 1 to 999999. The previous value was kept.';
+      error.hidden = false;
+      return;
     }
-    input.setCustomValidity(''); state.seed = candidate; renderLesson(true); persistDraft();
+    const candidate = Math.round(value);
+    input.value = String(candidate);
+    input.setCustomValidity('');
+    if (candidate !== value) {
+      error.textContent = `Deterministic seed uses whole numbers. ${raw} was changed to ${candidate}.`;
+      error.hidden = false;
+    } else {
+      error.textContent = '';
+      error.hidden = true;
+    }
+    state.seed = candidate;
+    renderLesson(true);
+    persistDraft();
   });
   $('#lock-prediction').addEventListener('click', () => {
     const answer = ($('#prediction-answer') as HTMLTextAreaElement).value.trim();
