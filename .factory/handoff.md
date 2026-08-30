@@ -20,7 +20,7 @@ npm run test:e2e
 
 ## Exact evidence
 
-- Fresh clone `/tmp/parameter-playground-polish2-clean.*`: all 14 exact manifest claim commands ran separately after `npm ci`; 28/28 desktop/mobile executions passed.
+- Fresh clone of final `main` at `/tmp/parameter-playground-polish2-final.*`: all 14 exact manifest claim commands ran separately after `npm ci`; 28/28 desktop/mobile executions passed.
 - Local: `npm test` passed 13/13; `npm run build` passed; `npm run test:claims` passed 28/28; `npm run test:e2e` passed 72/72.
 - Production: `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e` passed 72/72, including demo isolation, first-viewport sample content, routing/focus/Back, metadata/sitemap, privacy, offline reload, keyboard, 404, and axe checks.
 - Cold live verifier output: `/tmp/parameter-playground-polish2-live.jVN6pr/verify.json`; screenshots: `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-desktop.png` and `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-mobile.png`.

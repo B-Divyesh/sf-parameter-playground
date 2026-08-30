@@ -35,7 +35,7 @@ Every item in `.factory/review-1.md` and `.factory/review-2.md` is resolved. Liv
 
 ## Verification
 
-- Fresh clone of `bb9dec1`: `npm ci`, then every one of the 14 exact commands in `.factory/claims.json` separately. All 28 desktop/mobile executions passed.
+- Fresh clone of final `main`: `npm ci`, then every one of the 14 exact commands in `.factory/claims.json` separately. All 28 desktop/mobile executions passed.
 - Local: `npm test` (13/13), `npm run build`, `npm run test:claims` (28/28), and `npm run test:e2e` (72/72).
 - Live: `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e` passed 72/72 after deployment `93151274-5868-4959-9c46-888af9bcb869`.
 - Cold-live verifier: 200, title `Demo — Parameter Playground`, `lang=en`, one h1, main landmark, no missing image alt text, no unlabeled buttons, and no console errors.
