@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { readFile } from 'node:fs/promises';
 
+const appOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:4173').origin;
+
 test('runs the prediction, parameter, inspection, and explanation loop', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: /start with your own lesson/i }).click();
@@ -41,7 +43,7 @@ test('fits a 390px viewport without page-level horizontal scrolling', async ({ p
 });
 
 test('loads a shareable preset without a server account', async ({ context, page }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: appOrigin });
   await page.goto('/');
   await page.getByLabel('Lesson title').fill('Testing clustered routes');
   await page.getByRole('slider', { name: 'Clustering' }).fill('70');

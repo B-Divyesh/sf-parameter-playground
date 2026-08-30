@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { readFile } from 'node:fs/promises';
 
 const demoUrl = '/?demo=1#workbench';
+const appOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:4173').origin;
 
 test('@claim:demo-isolation keeps sample changes separate and discards them on exit', async ({ page }) => {
   await page.addInitScript(() => {
@@ -106,7 +107,7 @@ test('@claim:lesson-editing updates learner copy and the chart text alternative'
 });
 
 test('@claim:shareable-preset restores lesson text and parameters from the copied URL', async ({ context, page }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: appOrigin });
   await page.goto(demoUrl);
   await page.getByLabel('Lesson title').fill('Shared sample route');
   await page.getByRole('slider', { name: 'Clustering' }).fill('75');
@@ -174,7 +175,7 @@ test('@claim:same-origin-privacy sends only same-origin static requests during t
   await downloadPromise;
   const unexpected = requests.filter((request) => {
     const url = new URL(request);
-    return url.origin !== 'http://127.0.0.1:4173' || !(/^\/(?:$|index\.html$|sw\.js$|favicon\.svg$|apple-touch-icon\.png$|assets\/|fonts\/)/).test(url.pathname);
+    return url.origin !== appOrigin || !(/^\/(?:$|index\.html$|sw\.js$|favicon\.svg$|apple-touch-icon\.png$|assets\/|fonts\/)/).test(url.pathname);
   });
   expect(unexpected).toEqual([]);
 });

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f0df" />
+    <meta name="description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Parameter Playground" />
+    <meta property="og:title" content="Parameter Playground — test model changes" />
+    <meta property="og:description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta property="og:url" content="https://parameter-playground.sociobot.in/" />
+    <meta property="og:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A drafting sheet showing graph nodes connected by a route." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Parameter Playground — test model changes" />
+    <meta name="twitter:description" content="Build model lessons where learners predict, change one parameter, inspect the values, and explain the result." />
+    <meta name="twitter:image" content="https://parameter-playground.sociobot.in/assets/social-preview.jpg" />
+    <title>Parameter Playground — test model changes</title>
+    <link rel="canonical" href="https://parameter-playground.sociobot.in/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/AtkinsonHyperlegible-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/AtkinsonHyperlegible-Bold.ttf" as="font" type="font/ttf" crossorigin />
+    <script type="module" crossorigin src="/assets/main-Ds001NND.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/style-BAWSK--J.js">
+    <link rel="stylesheet" crossorigin href="/assets/style-BWX6sbCB.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to playground</a>
+    <p class="visually-hidden" id="route-announcer" aria-live="polite" aria-atomic="true"></p>
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="Parameter Playground home">
+        <span class="wordmark-mark" aria-hidden="true">P<span>↗</span></span>
+        <span>Parameter Playground</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/?demo=1#workbench">Demo</a>
+        <a href="#workbench">Workbench</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+    </header>
+
+    <aside class="demo-banner" id="demo-banner" aria-label="Demo controls" hidden>
+      <div>
+        <strong>Demo — sample data, nothing is saved</strong>
+        <span>Your regular draft stays untouched.</span>
+      </div>
+      <div class="demo-actions">
+        <button class="text-button" id="reset-demo" type="button">Reset demo</button>
+        <a class="button button-secondary" id="start-real" href="/#workbench">Start for real</a>
+      </div>
+    </aside>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Parameter simulations for lessons</p>
+          <h1 id="page-title" tabindex="-1">Test how one parameter<br /><em>changes a model</em></h1>
+          <p class="lede">For teachers and self-learners who need predictions, inspectable numbers, and lessons others can replay.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="/?demo=1#workbench">Try it with sample data <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#workbench">Start with your own lesson <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="action-note">The sample opens as a complete route lesson.</p>
+          <ul class="hero-facts" aria-label="Product facts">
+            <li>Drafts are stored in this browser</li>
+            <li>No account or payment</li>
+            <li>Works offline after first visit</li>
+          </ul>
+        </div>
+        <figure class="hero-figure">
+          <picture>
+            <source media="(max-width: 760px)" srcset="/assets/blueprint-workbench-960.webp" />
+            <img src="/assets/blueprint-workbench-1536.webp" width="1536" height="1024" alt="An overhead drafting sheet with blue graph nodes, a red route, ruler, compass, and pencil." fetchpriority="high" decoding="async" />
+          </picture>
+          <figcaption>Route study / nearest-neighbor sketch</figcaption>
+        </figure>
+      </section>
+
+      <section class="method-strip" id="method" aria-labelledby="method-title">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2 id="method-title">Predict, change, inspect, explain</h2>
+        </div>
+        <ol>
+          <li><span>01</span><strong>Predict</strong><small>Commit before changing</small></li>
+          <li><span>02</span><strong>Vary</strong><small>Move one parameter</small></li>
+          <li><span>03</span><strong>Inspect</strong><small>Read chart and data</small></li>
+          <li><span>04</span><strong>Explain</strong><small>Name cause and effect</small></li>
+        </ol>
+      </section>
+
+      <section class="workbench" id="workbench" aria-labelledby="workbench-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Lesson builder</p>
+            <h2 id="workbench-title">Build a model lesson</h2>
+          </div>
+          <div class="workbench-actions">
+            <span class="connection-status" id="connection-status"><span class="connection-indicator" aria-hidden="true"></span><span id="connection-status-text"> Checking connection…</span></span>
+            <button class="button button-secondary" id="share-button" type="button">Copy lesson link</button>
+          </div>
+        </div>
+
+        <div id="url-notice" class="notice" role="status" hidden></div>
+
+        <section class="model-picker" aria-labelledby="model-heading">
+          <div class="station-label"><span>SETUP</span><strong>Choose a model</strong></div>
+          <h3 id="model-heading" class="visually-hidden">Choose a model template</h3>
+          <div class="model-options" id="model-options"></div>
+        </section>
+
+        <details class="teacher-setup" id="teacher-setup" open>
+          <summary><span>Teacher setup</span><small>Lesson copy and required text alternative</small></summary>
+          <div class="setup-grid">
+            <div class="field wide-field">
+              <label for="lesson-title">Lesson title</label>
+              <input id="lesson-title" maxlength="80" required />
+            </div>
+            <div class="field wide-field">
+              <label for="prediction-prompt">Prediction prompt</label>
+              <textarea id="prediction-prompt" rows="2" maxlength="240" required></textarea>
+              <small>Ask about a visible effect that the model can answer.</small>
+            </div>
+            <div class="field wide-field">
+              <label for="visual-description">Visual description <span>required for sharing</span></label>
+              <textarea id="visual-description" rows="2" maxlength="300" required aria-describedby="description-hint"></textarea>
+              <small id="description-hint">Describe the marks and axes, not the conclusion. Live results are narrated separately.</small>
+            </div>
+          </div>
+          <p class="validation-message" id="setup-error" role="alert" hidden></p>
+        </details>
+
+        <div class="lesson-title-block">
+          <p class="drawing-number" id="drawing-number">MODEL / ROUTE / 001</p>
+          <h3 id="active-lesson-title">How local choices shape a route</h3>
+          <p id="active-assumption"></p>
+          <details class="limits-note">
+            <summary>Assumptions & numeric limits</summary>
+            <p id="active-limits"></p>
+          </details>
+        </div>
+
+        <section class="station station-predict" aria-labelledby="predict-heading">
+          <div class="station-label"><span>01</span><strong>Predict</strong></div>
+          <div class="station-body">
+            <h3 id="predict-heading">Commit before you move a control</h3>
+            <p class="prompt" id="learner-prompt"></p>
+            <label for="prediction-answer">My prediction</label>
+            <textarea id="prediction-answer" rows="3" placeholder="I predict… because…"></textarea>
+            <div class="inline-action">
+              <button class="button button-ink" id="lock-prediction" type="button">Commit prediction</button>
+              <span id="prediction-state" class="answer-state" aria-live="polite">Not committed yet</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="station station-vary" aria-labelledby="vary-heading">
+          <div class="station-label"><span>02</span><strong>Vary</strong></div>
+          <div class="station-body">
+            <div class="subheading-row">
+              <div>
+                <h3 id="vary-heading">Change one parameter</h3>
+                <p>Use a slider or its exact value. Arrow keys work on every slider.</p>
+              </div>
+              <button class="text-button" id="reset-parameters" type="button">Reset parameters</button>
+            </div>
+            <div class="parameter-grid" id="parameter-controls"></div>
+            <div class="seed-control">
+              <div>
+                <label for="seed-input">Deterministic seed</label>
+                <small id="seed-hint">Same seed + parameters = same result.</small>
+              </div>
+              <input id="seed-input" type="number" min="1" max="999999" step="1" inputmode="numeric" aria-describedby="seed-hint seed-error" />
+              <button class="button button-secondary" id="new-seed" type="button">Generate new seed</button>
+              <p class="parameter-error seed-error" id="seed-error" role="status" aria-live="polite" hidden></p>
+            </div>
+            <p class="live-update" id="live-update" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <section class="station station-inspect" aria-labelledby="inspect-heading">
+          <div class="station-label"><span>03</span><strong>Inspect</strong></div>
+          <div class="station-body">
+            <h3 id="inspect-heading">Compare the picture with the values</h3>
+            <div class="metrics" id="metrics"></div>
+            <div class="inspection-grid">
+              <figure class="simulation-figure" aria-labelledby="chart-title chart-caption">
+                <div class="figure-heading">
+                  <strong id="chart-title">Simulation plot</strong>
+                  <span>UPDATES WITH PARAMETERS</span>
+                </div>
+                <svg id="simulation-svg" viewBox="0 0 720 440" role="img" aria-describedby="chart-caption"></svg>
+                <figcaption id="chart-caption"></figcaption>
+              </figure>
+              <div class="data-sheet">
+                <div class="figure-heading"><strong>Underlying values</strong><span>VALUES BEHIND THE CHART</span></div>
+                <p class="table-hint" id="table-hint">Scroll sideways to inspect all columns on a small screen.</p>
+                <div class="table-scroll" tabindex="0" role="region" aria-label="Simulation data table" aria-describedby="table-hint">
+                  <table id="data-table"></table>
+                </div>
+                <button class="text-button" id="export-csv" type="button">Export data as CSV</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="station station-explain" aria-labelledby="explain-heading">
+          <div class="station-label"><span>04</span><strong>Explain</strong></div>
+          <div class="station-body">
+            <h3 id="explain-heading">Name what changed and what followed</h3>
+            <div class="sentence-builder">
+              <label for="changed-parameter">I changed</label>
+              <select id="changed-parameter"></select>
+              <label for="observed-effect">and observed</label>
+              <textarea id="observed-effect" rows="3" placeholder="Describe a measurable effect in your own words."></textarea>
+            </div>
+            <div class="inline-action">
+              <button class="button button-primary" id="complete-explanation" type="button">Complete explanation</button>
+              <span id="explanation-state" class="answer-state" aria-live="polite">Explanation not complete</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-dialog-title">
+      <form method="dialog">
+        <button class="dialog-close" value="close" aria-label="Close share link dialog">×</button>
+        <h2 id="share-dialog-title">Copy the lesson link</h2>
+        <p>Clipboard access is unavailable. Select and copy this URL manually.</p>
+        <label for="share-url">Shareable URL</label>
+        <input id="share-url" readonly />
+        <button class="button button-primary" value="close">Close share dialog</button>
+      </form>
+    </dialog>
+    <footer>
+      <p><strong>Parameter Playground</strong> keeps lesson drafts in this browser.</p>
+      <nav aria-label="Legal and project links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-parameter-playground">Source (external)</a></nav>
+      <p class="factory-note">Built by Param Factory · Version 1.0.0</p>
+    </footer>
+    <script>
+      // Keep the cached shell's connection message truthful even while its module
+      // bundle is still starting after an offline reload.
+      (() => {
+        const updateConnection = () => {
+          const status = document.getElementById('connection-status');
+          const text = document.getElementById('connection-status-text');
+          if (!status || !text) return;
+          const offline = !navigator.onLine;
+          status.classList.toggle('is-offline', offline);
+          text.textContent = offline ? ' Offline — saved shell ready' : ' Ready online';
+        };
+        window.addEventListener('online', updateConnection);
+        window.addEventListener('offline', updateConnection);
+        updateConnection();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+const appOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:4173').origin;
+
 test('names the audience and exposes the one-click sample action', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: 'Test how one parameter changes a model' })).toBeVisible();
@@ -50,6 +52,25 @@ test('moves focus to the route heading and announces Demo, Privacy, and Back nav
     await expect(page.getByRole('heading', { level: 1, name: destination.heading })).toBeFocused();
     await expect(page.locator('#route-announcer')).toHaveText(destination.announcement);
   }
+});
+
+test('uses the reviewed plain-language labels without decorative or public provenance copy', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new DOMException('Blocked for fallback test', 'NotAllowedError')) }
+    });
+  });
+  await page.goto('/?demo=1#workbench');
+  await expect(page.getByRole('button', { name: 'Generate new seed' })).toBeVisible();
+  await page.getByText('Assumptions & numeric limits').click();
+  await expect(page.locator('#active-limits')).toContainText('This rule is quick, but it may not find the shortest route.');
+  await expect(page.getByText('SHEET 01 / REV A')).toHaveCount(0);
+  await expect(page.getByText(/opening illustration was generated/i)).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Copy lesson link' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Close share dialog' })).toBeVisible();
 });
 
 test('keeps the product facts in the first desktop and mobile viewport', async ({ page }) => {
@@ -156,7 +177,7 @@ test('keeps the starting city within the current city count in every entry path'
 });
 
 test('normalizes a fractional seed atomically across the lesson, draft, and shared link', async ({ context, page }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: appOrigin });
   await page.goto('/?demo=1#workbench');
 
   const seed = page.getByRole('spinbutton', { name: 'Deterministic seed' });

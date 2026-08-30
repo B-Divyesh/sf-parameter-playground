@@ -1,24 +1,43 @@
-# Parameter Playground — review 1 handoff
-
-## Completed
-
-- Performed the requested adversarial first-read review against the live production site at desktop and 390px mobile sizes.
-- Reviewed the brief, design, demo documentation, claims manifest, README, all prior verification reports, and the prior handoff.
-- Ran `npm ci`, each individual claims-manifest command (12 claims in both configured browser projects), `npm test`, `npm run build`, and `npm run test:e2e`.
-- Wrote the full review to [review-1.md](review-1.md). No product code was changed.
+# Parameter Playground — polish round 1 handoff
 
 ## Result
 
-**FAIL.** The app and all declared claims pass, but [review-1.md](review-1.md) records eight open findings: missing programmatic route focus, two unlisted public claims, two jargon issues, two non-result action labels, and one decorative header label.
+PASS. Every finding in `.factory/review-1.md` is fixed, tested, committed, pushed, deployed, and rechecked at <https://parameter-playground.sociobot.in/>. No earlier review or polish report existed, and no known gap remains.
 
-## Verification summary
+## What changed
 
-- `npm test`: PASS (12/12)
-- `npm run build`: PASS (`dist/` produced)
-- `npm run test:e2e`: PASS (62/62)
-- All 12 exact `.factory/claims.json` commands: PASS in desktop and mobile (24 executions)
-- Fresh live demo: isolated `demo:` storage, Reset preserves a regular-draft sentinel, populated sample/visible banner, and same-origin-only request log
+- Route changes now focus the destination `<h1>` and announce Demo, Privacy, Terms, 404, hash, Back, and bfcache navigation.
+- The one-click `?demo=1#workbench` path remains isolated under `demo:parameter-playground-draft`; it has a persistent banner, Reset demo, and Start for real.
+- Added the `demo-populated-workbench` claim and its unique browser test. `.factory/claims.json` now has 13 claims.
+- Rewrote the reviewed jargon and action labels, removed the decorative revision label, and removed unlisted public image-provenance claims.
+- Added live-target support to Playwright so the same regression checks can run against production.
+- Updated the zero-flag copy audit and the verb-first, 95-character catalog description.
+- Preserved the original blueprint/drafting visual system and static-web deployment class.
 
-## Next step
+The finding-by-finding record is in `.factory/polish-1.md`.
 
-Resolve every `F-1-*` item in [review-1.md](review-1.md), then rerun the complete checklist from a fresh browser context.
+## Verification
+
+- Clean-clone claims: all 13 manifest commands run separately; 26/26 desktop/mobile executions passed.
+- `npm run check`: 13/13 unit/release tests, successful `dist/` build, 68/68 browser tests.
+- Axe: zero serious or critical issues on the app, demo, Privacy, Terms, direct 404, and unknown 404.
+- Privacy: same-origin-only demo requests passed locally and live.
+- Offline: fresh dedicated contexts reloaded and used the cached sample in both projects.
+- Live focused regression subset: 14/14 passed in desktop/mobile.
+- Live accessibility/privacy subset: 8/8 passed in desktop/mobile.
+- Live verifier: home and demo returned 200 with zero console errors and complete structural checks.
+- Live routing: home/demo/privacy/terms return 200; unknown paths return the designed 404 with status 404.
+- Live Lighthouse: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.7 s, CLS 0, TBT 0 ms.
+- Production budgets: JS 24.50 kB raw, CSS 20.53 kB raw, fonts 109.60 kB raw, mobile hero 55.88 kB.
+
+Evidence is under `.factory/polish-1-artifacts/`. Implementation commit: `fa9da29`. Deployment ID: `0cac824c-7d26-4897-aa41-b06dddc69cff`.
+
+## Run and verify
+
+```sh
+npm ci
+npm run check
+PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npx playwright test
+```
+
+Deployable output is `dist/`. The app remains a static Vite + TypeScript site with no backend, payment flow, analytics, or runtime third-party dependency.
