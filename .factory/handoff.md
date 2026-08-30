@@ -42,7 +42,14 @@ All previously passing behavior remains covered: three deterministic models, num
 
 ## Deployment
 
-The repair source is ready for the existing factory-managed Azure Static Web App `sf-parameter-playground` in resource group `sociobot`. Deployment and live byte-identity evidence will be appended after the repair commit is pushed.
+- Repair commit `6f96b01` was pushed to `origin/main`.
+- The verified `dist/` was uploaded directly to the existing factory-managed Azure Static Web App `sf-parameter-playground` in resource group `sociobot`. DNS, billing, and infrastructure configuration were not changed.
+- Azure deployment ID: `2edc4403-5bad-4e7c-9083-ffd0cc1d2120`; default host: `gray-stone-083258b0f.7.azurestaticapps.net`.
+- Live `index.html`, `sw.js`, privacy, terms, 404, `main-hLRIQUZr.js`, and `style-CcRmUXZ3.css` match the local production build byte-for-byte by SHA-256.
+- Live factory URL verification passed on home and demo with 0 console/page errors. The custom domain serves the restrictive response headers, immutable hashed-asset caching, and the designed 404 bytes with HTTP 404.
+- A fresh live 390px browser verified the populated first demo viewport, isolated `demo:` storage, 0px overflow, no sub-44px target, 0 serious/critical axe findings, no cross-origin request, no product-page console error, a real projectile CSV download, and keyboard slider operation.
+- A separate fresh live context updated the active service worker with no waiting worker, then reloaded offline with the demo banner and all six controls. Active cache: `parameter-playground-8bb2fe24ebbd`.
+- Live Lighthouse mobile: 100 Performance / 100 Accessibility / 100 Best Practices / 100 SEO; FCP 1.0s, LCP 1.7s, CLS 0, total blocking time 0ms.
 
 ## Known gaps and next steps
 
