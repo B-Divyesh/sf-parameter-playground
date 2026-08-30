@@ -1,5 +1,13 @@
 import './style.css';
-import { initialParameters, templates, type ModelTemplate, type SimulationResult, type TemplateId } from './models';
+import {
+  initialParameters,
+  normalizeParameters,
+  parameterBounds,
+  templates,
+  type ModelTemplate,
+  type SimulationResult,
+  type TemplateId
+} from './models';
 
 interface LessonState {
   template: TemplateId;
@@ -53,7 +61,7 @@ export function encodeLesson(state: LessonState): string {
   return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
 }
 
-export function decodeLesson(encoded: string): LessonState {
+function decodeLessonWithReport(encoded: string): { lesson: LessonState; corrected: string[] } {
   const padded = encoded.replaceAll('-', '+').replaceAll('_', '/') + '='.repeat((4 - encoded.length % 4) % 4);
   const binary = atob(padded);
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
@@ -62,20 +70,23 @@ export function decodeLesson(encoded: string): LessonState {
   const base = defaultState(templateId);
   const template = templates[templateId];
   const incoming = raw.params && typeof raw.params === 'object' ? raw.params : {};
-  const params = Object.fromEntries(template.parameters.map((definition) => {
-    const candidate = Number(incoming[definition.key]);
-    const value = Number.isFinite(candidate) ? Math.min(definition.max, Math.max(definition.min, candidate)) : definition.initial;
-    return [definition.key, Math.round(value / definition.step) * definition.step];
-  }));
+  const normalized = normalizeParameters(template, incoming as Record<string, unknown>);
   const seed = Number.isFinite(Number(raw.seed)) ? Math.min(999999, Math.max(1, Math.round(Number(raw.seed)))) : base.seed;
   return {
-    template: templateId,
-    title: safeText(raw.title, base.title, 80),
-    prompt: safeText(raw.prompt, base.prompt, 240),
-    description: safeText(raw.description, base.description, 300),
-    seed,
-    params
+    lesson: {
+      template: templateId,
+      title: safeText(raw.title, base.title, 80),
+      prompt: safeText(raw.prompt, base.prompt, 240),
+      description: safeText(raw.description, base.description, 300),
+      seed,
+      params: normalized.params
+    },
+    corrected: normalized.corrected
   };
+}
+
+export function decodeLesson(encoded: string): LessonState {
+  return decodeLessonWithReport(encoded).lesson;
 }
 
 let state = defaultState();
@@ -91,7 +102,15 @@ function loadInitialState(): void {
     $('#demo-banner').hidden = false;
     try {
       const draft = localStorage.getItem(DEMO_STORAGE_KEY);
-      if (draft) state = decodeLesson(draft);
+      if (draft) {
+        const decoded = decodeLessonWithReport(draft);
+        state = decoded.lesson;
+        if (decoded.corrected.length) {
+          const notice = $('#url-notice');
+          notice.textContent = 'Saved demo values outside this model’s limits were replaced.';
+          notice.hidden = false;
+        }
+      }
     } catch {
       // The sample remains usable when browser storage is unavailable.
     }
@@ -101,9 +120,12 @@ function loadInitialState(): void {
   const notice = $('#url-notice');
   if (encoded) {
     try {
-      state = decodeLesson(encoded);
+      const decoded = decodeLessonWithReport(encoded);
+      state = decoded.lesson;
       $('#teacher-setup').removeAttribute('open');
-      notice.textContent = 'Shared lesson loaded. Every value is encoded in this link; nothing was fetched from a server.';
+      notice.textContent = decoded.corrected.length
+        ? 'Shared lesson loaded. Values outside this model’s limits were replaced. Nothing was fetched from a server.'
+        : 'Shared lesson loaded. Every value is encoded in this link; nothing was fetched from a server.';
       notice.hidden = false;
     } catch {
       state = defaultState();
@@ -115,7 +137,14 @@ function loadInitialState(): void {
   }
   try {
     const draft = localStorage.getItem(REAL_STORAGE_KEY);
-    if (draft) state = decodeLesson(draft);
+    if (draft) {
+      const decoded = decodeLessonWithReport(draft);
+      state = decoded.lesson;
+      if (decoded.corrected.length) {
+        notice.textContent = 'Saved values outside this model’s limits were replaced.';
+        notice.hidden = false;
+      }
+    }
   } catch {
     // Storage may be unavailable; the live page remains fully usable.
   }
@@ -194,6 +223,7 @@ function renderControls(): void {
   changed.replaceChildren();
 
   template.parameters.forEach((definition) => {
+    const bounds = parameterBounds(template, definition, state.params);
     const group = el('div', 'parameter');
     const heading = el('div', 'parameter-heading');
     const label = el('label');
@@ -208,38 +238,57 @@ function renderControls(): void {
     const controls = el('div', 'paired-inputs');
     const range = el('input') as HTMLInputElement;
     range.type = 'range'; range.id = `range-${definition.key}`;
-    range.min = String(definition.min); range.max = String(definition.max); range.step = String(definition.step); range.value = String(state.params[definition.key]);
+    range.min = String(bounds.min); range.max = String(bounds.max); range.step = String(definition.step); range.value = String(state.params[definition.key]);
     range.setAttribute('aria-describedby', `hint-${definition.key}`);
     const number = el('input') as HTMLInputElement;
     number.type = 'number'; number.id = `number-${definition.key}`;
-    number.min = String(definition.min); number.max = String(definition.max); number.step = String(definition.step); number.value = String(state.params[definition.key]);
+    number.min = String(bounds.min); number.max = String(bounds.max); number.step = String(definition.step); number.value = String(state.params[definition.key]);
     number.setAttribute('aria-label', `${definition.label} exact value`);
     number.setAttribute('aria-describedby', `hint-${definition.key} error-${definition.key}`);
     const update = (raw: string, source: HTMLInputElement) => {
       const value = Number(raw);
       const error = document.querySelector<HTMLElement>(`#error-${definition.key}`)!;
+      const currentBounds = parameterBounds(template, definition, state.params);
+      const unit = definition.unit ? ` ${definition.unit}` : '';
       if (!raw.trim() || !Number.isFinite(value)) {
         source.value = String(state.params[definition.key]);
-        error.textContent = `${definition.label} needs a number from ${definition.min} to ${definition.max}${definition.unit ? ` ${definition.unit}` : ''}. The previous value was kept.`;
+        error.textContent = `${definition.label} needs a number from ${currentBounds.min} to ${currentBounds.max}${unit}. The previous value was kept.`;
         error.hidden = false;
         return;
       }
-      error.hidden = true;
-      const bounded = Math.min(definition.max, Math.max(definition.min, value));
-      state.params[definition.key] = bounded;
+      const normalized = normalizeParameters(template, { ...state.params, [definition.key]: value });
+      const accepted = normalized.params[definition.key]!;
+      if (value < currentBounds.min || value > currentBounds.max) {
+        error.textContent = `${definition.label} accepts ${currentBounds.min} to ${currentBounds.max}${unit}. ${value} was changed to ${accepted}${unit}.`;
+        error.hidden = false;
+      } else if (accepted !== value) {
+        error.textContent = `${definition.label} uses steps of ${definition.step}${unit}. ${value} was changed to ${accepted}${unit}.`;
+        error.hidden = false;
+      } else {
+        error.hidden = true;
+      }
+      state.params[definition.key] = accepted;
       if (definition.key === 'cities') {
-        state.params.start = Math.min(state.params.start ?? 1, bounded);
+        const previousStart = state.params.start ?? 1;
+        state.params.start = Math.min(previousStart, accepted);
         const startRange = document.querySelector<HTMLInputElement>('#range-start');
         const startNumber = document.querySelector<HTMLInputElement>('#number-start');
         const startOutput = document.querySelector<HTMLOutputElement>('#output-start');
-        if (startRange && startNumber && startOutput) {
-          startRange.max = String(bounded); startNumber.max = String(bounded);
+        const startHint = document.querySelector<HTMLElement>('#hint-start');
+        const startError = document.querySelector<HTMLElement>('#error-start');
+        if (startRange && startNumber && startOutput && startHint && startError) {
+          startRange.max = String(accepted); startNumber.max = String(accepted);
           startRange.value = String(state.params.start); startNumber.value = String(state.params.start);
           startOutput.textContent = String(state.params.start);
+          startHint.textContent = `1 means city A, 2 means B, and so on. Range 1–${accepted}.`;
+          if (state.params.start !== previousStart) {
+            startError.textContent = `Starting city changed to ${state.params.start} because this route has ${accepted} cities.`;
+            startError.hidden = false;
+          }
         }
       }
-      range.value = String(bounded); number.value = String(bounded);
-      output.textContent = `${bounded}${definition.unit ? ` ${definition.unit}` : ''}`;
+      range.value = String(accepted); number.value = String(accepted);
+      output.textContent = `${accepted}${definition.unit ? ` ${definition.unit}` : ''}`;
       lastParameter = definition.key;
       changed.value = definition.key;
       renderLesson(true);
@@ -250,7 +299,7 @@ function renderControls(): void {
     controls.append(range, number);
     const hint = el('small');
     hint.id = `hint-${definition.key}`;
-    hint.textContent = `${definition.hint} Range ${definition.min}–${definition.max}${definition.unit ? ` ${definition.unit}` : ''}.`;
+    hint.textContent = `${definition.hint} Range ${bounds.min}–${bounds.max}${definition.unit ? ` ${definition.unit}` : ''}.`;
     const error = el('p', 'parameter-error');
     error.id = `error-${definition.key}`;
     error.setAttribute('role', 'status');

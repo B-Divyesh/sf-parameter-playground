@@ -48,6 +48,58 @@ export interface ModelTemplate {
   calculate: (params: Record<string, number>, seed: number) => SimulationResult;
 }
 
+export interface ParameterBounds {
+  min: number;
+  max: number;
+}
+
+export interface NormalizedParameters {
+  params: Record<string, number>;
+  corrected: string[];
+}
+
+export function parameterBounds(
+  template: ModelTemplate,
+  parameter: ParameterDefinition,
+  params: Record<string, number>
+): ParameterBounds {
+  if (template.id === 'tour' && parameter.key === 'start') {
+    const cityDefinition = template.parameters.find(({ key }) => key === 'cities')!;
+    const rawCityCount = params.cities;
+    const cityCount = typeof rawCityCount === 'number' && Number.isFinite(rawCityCount)
+      ? Math.min(cityDefinition.max, Math.max(cityDefinition.min, Math.round(rawCityCount)))
+      : cityDefinition.initial;
+    return { min: parameter.min, max: Math.min(parameter.max, cityCount) };
+  }
+  return { min: parameter.min, max: parameter.max };
+}
+
+export function normalizeParameters(template: ModelTemplate, incoming: Record<string, unknown>): NormalizedParameters {
+  const params: Record<string, number> = {};
+  const corrected = new Set<string>();
+
+  template.parameters.forEach((parameter) => {
+    const candidate = Number(incoming[parameter.key]);
+    if (!Number.isFinite(candidate)) {
+      params[parameter.key] = parameter.initial;
+      return;
+    }
+    const bounded = Math.min(parameter.max, Math.max(parameter.min, candidate));
+    const stepped = Number((Math.round(bounded / parameter.step) * parameter.step).toFixed(10));
+    params[parameter.key] = Math.min(parameter.max, Math.max(parameter.min, stepped));
+    if (params[parameter.key] !== candidate) corrected.add(parameter.key);
+  });
+
+  template.parameters.forEach((parameter) => {
+    const bounds = parameterBounds(template, parameter, params);
+    const bounded = Math.min(bounds.max, Math.max(bounds.min, params[parameter.key]!));
+    if (bounded !== params[parameter.key]) corrected.add(parameter.key);
+    params[parameter.key] = bounded;
+  });
+
+  return { params, corrected: [...corrected] };
+}
+
 function mulberry32(seed: number): () => number {
   let value = seed >>> 0;
   return () => {

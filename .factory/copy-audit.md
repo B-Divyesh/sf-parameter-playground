@@ -14,7 +14,7 @@ Flagged lines: 0
 | Try it with sample data | 5 |
 | Start with your own lesson | 5 |
 | The sample opens as a complete route lesson. | 8 |
-| Three bounded models | 3 |
+| Drafts are stored in this browser | 6 |
 | No account or payment | 4 |
 | Works offline after first visit | 5 |
 | Route study / nearest-neighbor sketch | 4 |
@@ -39,7 +39,7 @@ The headline states the job in seven words. The next sentence names teachers and
 | Pulls alternating cities toward two centers. | 6 |
 | Range 0–85%. | 3 |
 | 1 means city A, 2 means B, and so on. | 10 |
-| Range 1–16. | 3 |
+| Range 1–9. | 3 |
 | Same seed + parameters = same result. | 5 |
 | Route recalculated: 176.3 units with 0 crossings. | 8 |
 | Nine labeled cities joined by a red nearest-neighbor route. | 9 |

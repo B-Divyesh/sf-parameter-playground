@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateGrowth, calculateProjectile, calculateTour, initialParameters, templates } from '../src/models';
+import { calculateGrowth, calculateProjectile, calculateTour, initialParameters, normalizeParameters, parameterBounds, templates } from '../src/models';
 
 describe('deterministic model templates', () => {
   it('produces the same route for the same seed and parameters', () => {
@@ -34,5 +34,16 @@ describe('deterministic model templates', () => {
       expect(parameter.initial).toBeGreaterThanOrEqual(parameter.min);
       expect(parameter.initial).toBeLessThanOrEqual(parameter.max);
     }));
+  });
+
+  it('normalizes the starting city against the normalized city count', () => {
+    const normalized = normalizeParameters(templates.tour, { cities: 9, cluster: 30, start: 16 });
+    expect(normalized.params).toEqual({ cities: 9, cluster: 30, start: 9 });
+    expect(normalized.corrected).toEqual(['start']);
+    expect(parameterBounds(templates.tour, templates.tour.parameters[2]!, normalized.params)).toEqual({ min: 1, max: 9 });
+
+    const fractional = normalizeParameters(templates.tour, { cities: 9, cluster: 30, start: 2.5 });
+    expect(fractional.params.start).toBe(3);
+    expect(fractional.corrected).toEqual(['start']);
   });
 });

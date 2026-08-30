@@ -47,6 +47,26 @@ test('@claim:three-bounded-models opens all three templates with limits and outp
   }
 });
 
+test('@claim:slider-arrow-keys changes every slider in every model', async ({ page }) => {
+  await page.goto(demoUrl);
+  const models = [/nearest-neighbor tour/i, /logistic population growth/i, /projectile motion/i];
+  let tested = 0;
+  for (const model of models) {
+    await page.getByRole('button', { name: model }).click();
+    const sliders = page.locator('#parameter-controls input[type="range"]');
+    const count = await sliders.count();
+    for (let index = 0; index < count; index += 1) {
+      const slider = sliders.nth(index);
+      const before = Number(await slider.inputValue());
+      const maximum = Number(await slider.getAttribute('max'));
+      await slider.press(before < maximum ? 'ArrowRight' : 'ArrowLeft');
+      expect(Number(await slider.inputValue())).not.toBe(before);
+      tested += 1;
+    }
+  }
+  expect(tested).toBe(10);
+});
+
 test('@claim:deterministic-seed reproduces every displayed value', async ({ page }) => {
   await page.goto(demoUrl);
   await page.getByRole('slider', { name: 'Clustering' }).fill('50');

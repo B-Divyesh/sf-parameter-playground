@@ -31,7 +31,7 @@ test('keeps the product facts in the first desktop and mobile viewport', async (
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);
     await page.goto('/');
-    for (const fact of ['Three bounded models', 'No account or payment', 'Works offline after first visit']) {
+    for (const fact of ['Drafts are stored in this browser', 'No account or payment', 'Works offline after first visit']) {
       await expect(page.getByText(fact, { exact: true })).toBeInViewport();
     }
     const image = page.locator('.hero-figure img');
@@ -77,6 +77,57 @@ test('supports keyboard-only navigation and slider changes', async ({ page }) =>
   await page.keyboard.press('ArrowRight');
   expect(Number(await slider.inputValue())).toBeGreaterThan(before);
   await expect(page.locator('#live-update')).toContainText('Route recalculated');
+});
+
+test('keeps the starting city within the current city count in every entry path', async ({ page }) => {
+  const expectRouteState = async (cities: number, start: number, label: string) => {
+    const startRange = page.getByRole('slider', { name: 'Starting city' });
+    const startNumber = page.getByRole('spinbutton', { name: 'Starting city exact value' });
+    await expect(startRange).toHaveAttribute('max', String(cities));
+    await expect(startNumber).toHaveAttribute('max', String(cities));
+    await expect(startRange).toHaveValue(String(start));
+    await expect(startNumber).toHaveValue(String(start));
+    await expect(page.locator('#output-start')).toHaveText(String(start));
+    await expect(page.locator('#metrics').getByText('Start').locator('..').locator('strong')).toHaveText(label);
+  };
+
+  await page.goto('/?demo=1#workbench');
+  await expectRouteState(9, 2, 'B');
+
+  const start = page.getByRole('spinbutton', { name: 'Starting city exact value' });
+  await start.fill('2.5');
+  await start.dispatchEvent('change');
+  await expectRouteState(9, 3, 'C');
+  await expect(page.locator('#error-start')).toHaveText('Starting city uses steps of 1. 2.5 was changed to 3.');
+
+  await start.fill('16');
+  await start.dispatchEvent('change');
+  await expectRouteState(9, 9, 'I');
+  await expect(page.locator('#error-start')).toHaveText('Starting city accepts 1 to 9. 16 was changed to 9.');
+  await expect(page.locator('#error-start')).toBeVisible();
+
+  const cities = page.getByRole('spinbutton', { name: 'Cities exact value' });
+  await cities.fill('5');
+  await cities.dispatchEvent('change');
+  await expectRouteState(5, 5, 'E');
+  await expect(page.locator('#error-start')).toHaveText('Starting city changed to 5 because this route has 5 cities.');
+
+  await page.getByRole('button', { name: 'Reset demo' }).click();
+  await expectRouteState(9, 2, 'B');
+  await page.getByRole('button', { name: /logistic population growth/i }).click();
+  await page.getByRole('button', { name: /nearest-neighbor tour/i }).click();
+  await expectRouteState(9, 1, 'A');
+
+  const invalidSharedLesson = await page.evaluate(() => {
+    const lesson = {
+      template: 'tour', title: 'Contextual bounds', prompt: 'Which city starts?', description: 'Seven labeled cities and their route.',
+      seed: 41723, params: { cities: 7, cluster: 30, start: 16 }
+    };
+    return btoa(JSON.stringify(lesson)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
+  });
+  await page.goto(`/?lesson=${invalidSharedLesson}#workbench`);
+  await expectRouteState(7, 7, 'G');
+  await expect(page.locator('#url-notice')).toContainText('Values outside this model’s limits were replaced.');
 });
 
 test('keeps legal and not-found routes free of serious accessibility violations', async ({ page }) => {

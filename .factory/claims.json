@@ -9,9 +9,16 @@
   {
     "id": "three-bounded-models",
     "claim": "Includes three bounded model templates with assumptions and numeric limits.",
-    "where": "landing facts, README",
+    "where": "workbench model picker, README",
     "test": "npm run test:claims -- --grep @claim:three-bounded-models",
     "sandbox": "open every template from the demo and verify controls, bounds, assumptions, and output rows"
+  },
+  {
+    "id": "slider-arrow-keys",
+    "claim": "Arrow keys work on every slider.",
+    "where": "workbench parameter instructions",
+    "test": "npm run test:claims -- --grep @claim:slider-arrow-keys",
+    "sandbox": "open every template in the demo; press an arrow key on every rendered slider; assert each value changes"
   },
   {
     "id": "deterministic-seed",
@@ -44,7 +51,7 @@
   {
     "id": "local-draft",
     "claim": "Regular lesson settings stay in browser local storage and survive a refresh.",
-    "where": "footer, README, privacy page",
+    "where": "landing facts, footer, README, privacy page",
     "test": "npm run test:claims -- --grep @claim:local-draft",
     "sandbox": "start from demo, leave for real mode, edit a lesson, reload, and inspect the namespaced local key"
   },

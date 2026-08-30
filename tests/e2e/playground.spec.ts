@@ -73,6 +73,26 @@ test('keeps the previous exact value and announces a blank numeric entry', async
   await expect(page.locator('#error-cities')).toBeVisible();
 });
 
+test('replaces and announces out-of-range exact values', async ({ page }) => {
+  await page.goto('/?demo=1#workbench');
+  const cities = page.getByRole('spinbutton', { name: 'Cities exact value' });
+  await cities.fill('99');
+  await cities.dispatchEvent('change');
+  await expect(cities).toHaveValue('16');
+  await expect(page.locator('#output-cities')).toHaveText('16');
+  await expect(page.locator('#error-cities')).toHaveText('Cities accepts 5 to 16. 99 was changed to 16.');
+  await expect(page.locator('#error-cities')).toBeVisible();
+
+  await page.getByRole('button', { name: /projectile motion/i }).click();
+  const gravity = page.getByRole('spinbutton', { name: 'Gravity exact value' });
+  await gravity.fill('999');
+  await gravity.dispatchEvent('change');
+  await expect(gravity).toHaveValue('20');
+  await expect(page.locator('#output-gravity')).toHaveText('20 m/s²');
+  await expect(page.locator('#error-gravity')).toHaveText('Gravity accepts 1 to 20 m/s². 999 was changed to 20 m/s².');
+  await expect(page.locator('#error-gravity')).toBeVisible();
+});
+
 test('downloads the displayed data as CSV before confirming success', async ({ page }) => {
   await page.goto('/?demo=1#workbench');
   await page.getByRole('button', { name: /projectile motion/i }).click();
