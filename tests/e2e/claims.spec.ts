@@ -31,19 +31,27 @@ test('@claim:demo-isolation keeps sample changes separate and discards them on e
 });
 
 test('@claim:demo-populated-workbench opens the complete route lesson from a clean state', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(demoUrl);
   await expect(page.getByText('Demo — sample data, nothing is saved', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
   await expect(page.getByLabel('Lesson title')).toHaveValue('How clustering changes a delivery route');
-  await expect(page.getByRole('heading', { name: 'How clustering changes a delivery route' })).toBeVisible();
+  await expect(page.locator('#active-lesson-title')).toHaveText('How clustering changes a delivery route');
+  await expect(page.locator('#demo-snapshot-title')).toHaveText('How clustering changes a delivery route');
+  await expect(page.locator('#demo-snapshot-title')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-parameter')).toContainText('Cities: 9');
+  await expect(page.locator('#demo-snapshot-parameter')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-metric')).toContainText('Route length:');
+  await expect(page.locator('#demo-snapshot-metric')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-chart')).toBeInViewport();
   await expect(page.locator('#parameter-controls input')).toHaveCount(6);
   await expect(page.locator('#simulation-svg')).toBeVisible();
   await expect(page.locator('#data-table tbody tr')).toHaveCount(9);
   await expect(page.getByRole('heading', { name: 'Build a model lesson' })).toBeInViewport();
 });
 
-test('@claim:three-bounded-models opens all three templates with limits and output', async ({ page }) => {
+test('@claim:three-models-with-limits opens all three models with limits and output', async ({ page }) => {
   await page.goto(demoUrl);
   const models = [
     { name: /nearest-neighbor tour/i, slider: 'Cities', limit: '5–16 cities' },
@@ -84,7 +92,7 @@ test('@claim:slider-arrow-keys changes every slider in every model', async ({ pa
 test('@claim:deterministic-seed reproduces every displayed value', async ({ page }) => {
   await page.goto(demoUrl);
   await page.getByRole('slider', { name: 'Clustering' }).fill('50');
-  const seed = page.getByRole('spinbutton', { name: 'Deterministic seed' });
+  const seed = page.getByRole('spinbutton', { name: 'Repeatable seed' });
   await seed.fill('12345');
   await seed.dispatchEvent('change');
   const first = await page.locator('#data-table tbody').innerText();
@@ -101,7 +109,7 @@ test('@claim:lesson-editing updates learner copy and the chart text alternative'
   await page.getByLabel('Lesson title').fill('Compare tight and loose clusters');
   await page.getByLabel('Prediction prompt').fill('Will tighter clusters shorten this route?');
   await page.getByLabel(/Visual description/).fill('Nine city markers connected by a red route on a coordinate plane.');
-  await expect(page.getByRole('heading', { name: 'Compare tight and loose clusters' })).toBeVisible();
+  await expect(page.locator('#active-lesson-title')).toHaveText('Compare tight and loose clusters');
   await expect(page.locator('#learner-prompt')).toHaveText('Will tighter clusters shorten this route?');
   await expect(page.locator('#chart-caption')).toContainText('Nine city markers connected by a red route on a coordinate plane.');
 });
@@ -217,4 +225,14 @@ test('@claim:accessible-inspection exposes narration and semantic data without s
   }
   const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''))).toEqual([]);
+});
+
+test('@claim:bounded-educational-scope keeps the fixed classroom scope visible', async ({ page }) => {
+  await page.goto(demoUrl);
+  await expect(page.locator('#model-options button')).toHaveCount(3);
+  expect(await page.locator('textarea, input').evaluateAll((fields) =>
+    fields.filter((field) => /(^|[-_])(code|script|formula)([-_]|$)/i.test(field.getAttribute('aria-label') ?? field.id ?? '')).length
+  )).toBe(0);
+  await page.goto('/terms/');
+  await expect(page.getByText('They explain classroom models. They do not run custom code or guide real-world decisions.')).toBeVisible();
 });

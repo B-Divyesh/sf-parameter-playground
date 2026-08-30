@@ -14,7 +14,7 @@ Flagged lines: 0
 | Privacy | 1 |
 | Parameter simulations for lessons | 4 |
 | Test how one parameter changes a model | 7 |
-| For teachers and self-learners who need predictions, inspectable numbers, and lessons others can replay. | 14 |
+| For teachers and self-learners who want to predict changes, check the numbers, and share lessons. | 14 |
 | Try it with sample data | 5 |
 | Start with your own lesson | 5 |
 | The sample opens as a complete route lesson. | 8 |
@@ -41,6 +41,10 @@ The headline states the job in seven words. The next sentence names teachers and
 | Name cause and effect | 5 |
 | Lesson builder | 2 |
 | Build a model lesson | 4 |
+| Sample lesson | 2 |
+| How clustering changes a delivery route | 6 |
+| Cities: 9 | 2 |
+| Route length: 176.3 units | 4 |
 | Ready online | 2 |
 | Copy lesson link | 3 |
 | Choose a model | 3 |
@@ -70,7 +74,7 @@ The headline states the job in seven words. The next sentence names teachers and
 | My prediction | 2 |
 | Commit prediction | 2 |
 | Not committed yet | 3 |
-| Vary | 1 |
+| Change | 1 |
 | Change one parameter | 3 |
 | Use a slider or its exact value. | 7 |
 | Arrow keys work on every slider. | 6 |
@@ -84,7 +88,7 @@ The headline states the job in seven words. The next sentence names teachers and
 | Starting city | 2 |
 | 1 means city A, 2 means B, and so on. | 10 |
 | Range 1–9. | 3 |
-| Deterministic seed | 2 |
+| Repeatable seed | 2 |
 | Same seed + parameters = same result. | 5 |
 | Generate new seed | 3 |
 | Route recalculated: 176.3 units with 0 crossings. | 8 |
@@ -111,9 +115,9 @@ The headline states the job in seven words. The next sentence names teachers and
 
 | Copy | Words |
 | --- | ---: |
-| Deterministic seed uses whole numbers. | 5 |
+| Repeatable seed uses whole numbers. | 5 |
 | 2.5 was changed to 3. | 5 |
-| Deterministic seed needs a whole number from 1 to 999999. | 10 |
+| Repeatable seed needs a whole number from 1 to 999999. | 10 |
 | The previous value was kept. | 6 |
 | Add the lesson title, prediction prompt, and visual description before sharing. | 11 |
 | Write a prediction before committing it. | 6 |
@@ -136,8 +140,9 @@ The headline states the job in seven words. The next sentence names teachers and
 | Sentence | Words |
 | --- | ---: |
 | Build replayable parameter model lessons for teachers and self-learners. | 9 |
-| Each lesson follows four steps: predict, vary, inspect, and explain. | 9 |
-| Three bounded templates cover nearest-neighbor tours, logistic growth, and ideal projectile motion. | 11 |
+| Each lesson follows four steps: predict, change, inspect, and explain. | 9 |
+| Three models cover nearest-neighbor routes, logistic growth, and ideal projectile motion. | 10 |
+| Each model has fixed input limits. | 6 |
 | The same seed and parameters reproduce the same displayed values. | 9 |
 | Teachers can edit the title, prediction prompt, and required visual description. | 11 |
 | Each model provides spoken results, measurements, a table of values, and a CSV download. | 14 |
@@ -146,23 +151,19 @@ The headline states the job in seven words. The next sentence names teachers and
 | Regular drafts stay in browser local storage and survive a refresh. | 10 |
 | The app works offline after the first successful visit. | 9 |
 | Each model shows its assumptions and numeric limits. | 8 |
-| This is an explanatory classroom instrument, not a general code runner, computer algebra system, or real-world safety calculator. | 17 |
+| The models are for classroom explanation, not custom code or real-world decisions. | 11 |
 | Open the sample demo in one click. | 8 |
 | It loads a complete route lesson and labels the page as a demo. | 13 |
 | Demo changes use the separate demo storage key. | 7 |
 | They never read or write your regular draft. | 8 |
 | Use Reset demo to restore the sample. | 7 |
 | Use Start for real to discard demo changes and return to your regular draft. | 14 |
-| Requires Node.js 20 or newer. | 5 |
 | Then open the local URL printed by Vite. | 9 |
 | Run all gates in sequence with npm run check. | 9 |
-| Playwright is pinned to 1.58.2; install its Chromium build if it is not already available. | 16 |
 | Draft lesson settings stay in browser local storage. | 8 |
 | Shared lesson settings live in the URL. | 8 |
 | The app adds no accounts, analytics, ads, tracking pixels, or third-party runtime requests. | 12 |
 | See the privacy page for details. | 7 |
-| Atkinson Hyperlegible is self-hosted from the SIL Open Font License release distributed by Google Fonts. | 15 |
-| Application code is available under the MIT License. | 9 |
 
 ## Banned-word scan
 

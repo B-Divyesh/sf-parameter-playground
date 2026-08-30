@@ -1,1 +1,1 @@
-Test how one parameter changes a model with replayable lessons for teachers and self-learners.
+Build replayable model lessons by changing one parameter and checking the result.

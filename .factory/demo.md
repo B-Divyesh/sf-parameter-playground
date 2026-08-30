@@ -8,7 +8,7 @@ The home page exposes this in one click as **Try it with sample data**. The page
 
 ## Sample data
 
-The demo opens **How clustering changes a delivery route**. It uses nine synthetic cities, 65% clustering, starting city B, and deterministic seed 41723. It includes an authored prediction prompt, chart description, route metrics, narrated result, and complete values table.
+The demo opens **How clustering changes a delivery route**. It uses nine synthetic cities, 65% clustering, starting city B, and repeatable seed 41723. On a 390 px phone, the first demo view shows the sample title, parameter, route metric, and chart preview before setup controls. It includes an authored prediction prompt, chart description, route metrics, narrated result, and complete values table.
 
 ## Storage isolation
 

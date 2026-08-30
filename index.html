@@ -56,7 +56,7 @@
         <div class="hero-copy">
           <p class="eyebrow">Parameter simulations for lessons</p>
           <h1 id="page-title" tabindex="-1">Test how one parameter<br /><em>changes a model</em></h1>
-          <p class="lede">For teachers and self-learners who need predictions, inspectable numbers, and lessons others can replay.</p>
+          <p class="lede">For teachers and self-learners who want to predict changes, check the numbers, and share lessons.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="/?demo=1#workbench">Try it with sample data <span aria-hidden="true">→</span></a>
             <a class="button button-secondary" href="#workbench">Start with your own lesson <span aria-hidden="true">↓</span></a>
@@ -84,7 +84,7 @@
         </div>
         <ol>
           <li><span>01</span><strong>Predict</strong><small>Commit before changing</small></li>
-          <li><span>02</span><strong>Vary</strong><small>Move one parameter</small></li>
+          <li><span>02</span><strong>Change</strong><small>Move one parameter</small></li>
           <li><span>03</span><strong>Inspect</strong><small>Read chart and data</small></li>
           <li><span>04</span><strong>Explain</strong><small>Name cause and effect</small></li>
         </ol>
@@ -104,9 +104,19 @@
 
         <div id="url-notice" class="notice" role="status" hidden></div>
 
+        <section class="demo-snapshot" id="demo-snapshot" aria-labelledby="demo-snapshot-title" hidden>
+          <div class="demo-snapshot-copy">
+            <p class="eyebrow">Sample lesson</p>
+            <h3 id="demo-snapshot-title"></h3>
+            <p id="demo-snapshot-parameter"></p>
+            <p class="demo-snapshot-metric" id="demo-snapshot-metric"></p>
+          </div>
+          <svg id="demo-snapshot-chart" viewBox="0 0 720 440" role="img" aria-label="Preview of the current simulation chart"></svg>
+        </section>
+
         <section class="model-picker" aria-labelledby="model-heading">
           <div class="station-label"><span>SETUP</span><strong>Choose a model</strong></div>
-          <h3 id="model-heading" class="visually-hidden">Choose a model template</h3>
+          <h3 id="model-heading" class="visually-hidden">Choose a model</h3>
           <div class="model-options" id="model-options"></div>
         </section>
 
@@ -156,7 +166,7 @@
         </section>
 
         <section class="station station-vary" aria-labelledby="vary-heading">
-          <div class="station-label"><span>02</span><strong>Vary</strong></div>
+          <div class="station-label"><span>02</span><strong>Change</strong></div>
           <div class="station-body">
             <div class="subheading-row">
               <div>
@@ -168,7 +178,7 @@
             <div class="parameter-grid" id="parameter-controls"></div>
             <div class="seed-control">
               <div>
-                <label for="seed-input">Deterministic seed</label>
+                <label for="seed-input">Repeatable seed</label>
                 <small id="seed-hint">Same seed + parameters = same result.</small>
               </div>
               <input id="seed-input" type="number" min="1" max="999999" step="1" inputmode="numeric" aria-describedby="seed-hint seed-error" />

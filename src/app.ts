@@ -50,6 +50,25 @@ const sampleDemoState = (): LessonState => ({
   params: { cities: 9, cluster: 65, start: 2 }
 });
 
+function setMeta(selector: string, content: string): void {
+  document.querySelector<HTMLMetaElement>(selector)?.setAttribute('content', content);
+}
+
+function updateDocumentMetadata(): void {
+  if (!isDemoMode) return;
+  const title = 'Demo — Parameter Playground';
+  const description = 'Try a complete route lesson: change one parameter, inspect the values, and explain the result.';
+  const url = 'https://parameter-playground.sociobot.in/?demo=1';
+  document.title = title;
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', url);
+  document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', description);
+  setMeta('meta[property="og:title"]', title);
+  setMeta('meta[property="og:description"]', description);
+  setMeta('meta[property="og:url"]', url);
+  setMeta('meta[name="twitter:title"]', title);
+  setMeta('meta[name="twitter:description"]', description);
+}
+
 function safeText(value: unknown, fallback: string, max: number): string {
   return typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : fallback;
 }
@@ -99,9 +118,9 @@ let renderTimer = 0;
 function loadInitialState(): void {
   if (isDemoMode) {
     state = sampleDemoState();
-    document.title = 'Demo — Parameter Playground';
-    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', 'https://parameter-playground.sociobot.in/?demo=1');
+    updateDocumentMetadata();
     $('#demo-banner').hidden = false;
+    $('#demo-snapshot').hidden = false;
     try {
       const draft = localStorage.getItem(DEMO_STORAGE_KEY);
       if (draft) {
@@ -407,6 +426,25 @@ function renderMetrics(): void {
   });
 }
 
+function renderDemoSnapshot(): void {
+  const snapshot = $('#demo-snapshot');
+  if (!isDemoMode) {
+    snapshot.hidden = true;
+    return;
+  }
+  const definition = currentTemplate().parameters.find((parameter) => parameter.key === lastParameter) ?? currentTemplate().parameters[0];
+  const value = definition ? state.params[definition.key] : undefined;
+  $('#demo-snapshot-title').textContent = state.title;
+  $('#demo-snapshot-parameter').textContent = definition && value !== undefined
+    ? `${definition.label}: ${value}${definition.unit ? ` ${definition.unit}` : ''}`
+    : '';
+  const metric = result.metrics[0];
+  $('#demo-snapshot-metric').textContent = metric ? `${metric.label}: ${metric.value}` : result.narration;
+  const sourceChart = document.querySelector<SVGSVGElement>('#simulation-svg')!;
+  const preview = document.querySelector<SVGSVGElement>('#demo-snapshot-chart')!;
+  preview.replaceChildren(...Array.from(sourceChart.children, (child) => child.cloneNode(true)));
+}
+
 function renderLesson(announce = false): void {
   const template = currentTemplate();
   result = template.calculate(state.params, state.seed);
@@ -416,7 +454,7 @@ function renderLesson(announce = false): void {
   $('#active-limits').textContent = `${template.limits} Seed: ${state.seed}. ${template.assumption}`;
   $('#learner-prompt').textContent = state.prompt;
   $('#chart-caption').textContent = `${state.description} Current result: ${result.narration}`;
-  renderMetrics(); renderChart(); renderTable();
+  renderMetrics(); renderChart(); renderTable(); renderDemoSnapshot();
   if (announce) {
     window.clearTimeout(renderTimer);
     renderTimer = window.setTimeout(() => { $('#live-update').textContent = result.status; }, 80);
@@ -533,7 +571,7 @@ function bindEvents(): void {
   $('#new-seed').addEventListener('click', () => {
     state.seed = Math.floor(Math.random() * 999999) + 1;
     ($('#seed-input') as HTMLInputElement).value = String(state.seed);
-    renderLesson(true); persistDraft(); showToast(`New deterministic seed ${state.seed} applied.`);
+    renderLesson(true); persistDraft(); showToast(`New repeatable seed ${state.seed} applied.`);
   });
   $('#seed-input').addEventListener('change', (event) => {
     const input = event.currentTarget as HTMLInputElement;
@@ -543,7 +581,7 @@ function bindEvents(): void {
     if (!raw.trim() || !Number.isFinite(value) || value < 1 || value > 999999) {
       input.value = String(state.seed);
       input.setCustomValidity('');
-      error.textContent = 'Deterministic seed needs a whole number from 1 to 999999. The previous value was kept.';
+      error.textContent = 'Repeatable seed needs a whole number from 1 to 999999. The previous value was kept.';
       error.hidden = false;
       return;
     }
@@ -551,7 +589,7 @@ function bindEvents(): void {
     input.value = String(candidate);
     input.setCustomValidity('');
     if (candidate !== value) {
-      error.textContent = `Deterministic seed uses whole numbers. ${raw} was changed to ${candidate}.`;
+      error.textContent = `Repeatable seed uses whole numbers. ${raw} was changed to ${candidate}.`;
       error.hidden = false;
     } else {
       error.textContent = '';

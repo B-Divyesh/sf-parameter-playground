@@ -8,17 +8,17 @@
   },
   {
     "id": "demo-populated-workbench",
-    "claim": "The one-click sample opens a complete route lesson.",
+    "claim": "The one-click sample opens a complete route lesson with a visible result on a phone.",
     "where": "landing hero action, demo documentation, README",
     "test": "npm run test:claims -- --grep @claim:demo-populated-workbench",
-    "sandbox": "fresh browser context; open ?demo=1#workbench and assert the demo banner, sample title, controls, chart, table, and visible workbench"
+    "sandbox": "fresh 390×844 browser context; open ?demo=1#workbench and assert the demo banner, sample title, parameter, metric, chart preview, controls, chart, and table"
   },
   {
-    "id": "three-bounded-models",
-    "claim": "Includes three bounded model templates with assumptions and numeric limits.",
+    "id": "three-models-with-limits",
+    "claim": "Includes three models with assumptions and input limits.",
     "where": "workbench model picker, README",
-    "test": "npm run test:claims -- --grep @claim:three-bounded-models",
-    "sandbox": "open every template from the demo and verify controls, bounds, assumptions, and output rows"
+    "test": "npm run test:claims -- --grep @claim:three-models-with-limits",
+    "sandbox": "open every model from the demo and verify controls, bounds, assumptions, and output rows"
   },
   {
     "id": "slider-arrow-keys",
@@ -89,5 +89,12 @@
     "where": "README, workbench",
     "test": "npm run test:claims -- --grep @claim:accessible-inspection",
     "sandbox": "open the demo, inspect chart naming and table semantics, and run axe against the rendered workbench"
+  },
+  {
+    "id": "bounded-educational-scope",
+    "claim": "The models explain classroom examples and do not run custom code or guide real-world decisions.",
+    "where": "README, terms page",
+    "test": "npm run test:claims -- --grep @claim:bounded-educational-scope",
+    "sandbox": "open the isolated demo and terms page; verify the three fixed models, no code-entry surface, and the plain-language scope notice"
   }
 ]

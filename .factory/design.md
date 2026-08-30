@@ -2,7 +2,7 @@
 
 ## Direction: a working blueprint, not a polished black box
 
-The product looks like a drafting sheet on a teacher's desk: blue-black ink, cyan construction lines, ruled measurements, paper grain, and one warm correction-pencil accent. This fits the job because every simulation is presented as something inspectable and revisable. The construction marks make inputs and consequences feel connected; the warm annotations make the pedagogical loop—predict, vary, inspect, explain—easy to scan. It is intentionally single-mode: the pale drafting paper is part of the product metaphor and avoids turning a lesson into generic dashboard chrome.
+The product looks like a drafting sheet on a teacher's desk: blue-black ink, cyan construction lines, ruled measurements, paper grain, and one warm correction-pencil accent. This fits the job because every simulation is presented as something a learner can check and revise. The construction marks make inputs and consequences feel connected; the warm annotations make the teaching loop—predict, change, inspect, explain—easy to scan. It is intentionally single-mode: the pale drafting paper is part of the product metaphor and avoids turning a lesson into generic dashboard chrome.
 
 ## Tokens
 

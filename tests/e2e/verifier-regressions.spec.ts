@@ -18,15 +18,34 @@ test('names the audience and exposes the one-click sample action', async ({ page
 });
 
 test('opens a direct demo URL with the populated workbench in the first viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/?demo=1#workbench');
   await expect(page.getByRole('heading', { name: 'Build a model lesson' })).toBeInViewport();
   await expect(page.getByRole('heading', { level: 1 })).not.toBeInViewport();
   await expect(page.getByLabel('Lesson title')).toHaveValue('How clustering changes a delivery route');
+  await expect(page.locator('#demo-snapshot-title')).toHaveText('How clustering changes a delivery route');
+  await expect(page.locator('#demo-snapshot-title')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-parameter')).toContainText('Cities: 9');
+  await expect(page.locator('#demo-snapshot-parameter')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-metric')).toContainText('Route length:');
+  await expect(page.locator('#demo-snapshot-metric')).toBeInViewport();
+  await expect(page.locator('#demo-snapshot-chart')).toBeInViewport();
   await expect.poll(async () => page.evaluate(() => {
     const bannerBottom = document.querySelector('#demo-banner')!.getBoundingClientRect().bottom;
     const headingTop = document.querySelector('#workbench-title')!.getBoundingClientRect().top;
     return headingTop - bannerBottom;
   })).toBeLessThan(160);
+});
+
+test('gives the direct demo route matching social metadata and sitemap coverage', async ({ page }) => {
+  await page.goto('/?demo=1#workbench');
+  await expect(page).toHaveTitle('Demo — Parameter Playground');
+  expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe('https://parameter-playground.sociobot.in/?demo=1');
+  expect(await page.locator('meta[property="og:title"]').getAttribute('content')).toBe('Demo — Parameter Playground');
+  expect(await page.locator('meta[name="twitter:title"]').getAttribute('content')).toBe('Demo — Parameter Playground');
+  expect(await page.locator('meta[property="og:url"]').getAttribute('content')).toBe('https://parameter-playground.sociobot.in/?demo=1');
+  const sitemap = await page.request.get('/sitemap.xml');
+  expect(await sitemap.text()).toContain('https://parameter-playground.sociobot.in/?demo=1');
 });
 
 test('moves focus to the route heading and announces Demo, Privacy, and Back navigation', async ({ page }) => {
@@ -180,7 +199,7 @@ test('normalizes a fractional seed atomically across the lesson, draft, and shar
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: appOrigin });
   await page.goto('/?demo=1#workbench');
 
-  const seed = page.getByRole('spinbutton', { name: 'Deterministic seed' });
+  const seed = page.getByRole('spinbutton', { name: 'Repeatable seed' });
   await seed.fill('2.5');
   await seed.dispatchEvent('change');
 
@@ -189,7 +208,7 @@ test('normalizes a fractional seed atomically across the lesson, draft, and shar
     valid: input.validity.valid,
     stepMismatch: input.validity.stepMismatch
   }))).toEqual({ valid: true, stepMismatch: false });
-  await expect(page.locator('#seed-error')).toHaveText('Deterministic seed uses whole numbers. 2.5 was changed to 3.');
+  await expect(page.locator('#seed-error')).toHaveText('Repeatable seed uses whole numbers. 2.5 was changed to 3.');
   await expect(page.locator('#seed-error')).toBeVisible();
   await expect(page.locator('#drawing-number')).toContainText('Seed: 3');
   await expect(page.locator('#active-limits')).toContainText('Seed: 3.');
@@ -206,7 +225,7 @@ test('normalizes a fractional seed atomically across the lesson, draft, and shar
   const url = await page.evaluate(() => navigator.clipboard.readText());
   const restored = await context.newPage();
   await restored.goto(url);
-  await expect(restored.getByRole('spinbutton', { name: 'Deterministic seed' })).toHaveValue('3');
+  await expect(restored.getByRole('spinbutton', { name: 'Repeatable seed' })).toHaveValue('3');
   await expect(restored.locator('#drawing-number')).toContainText('Seed: 3');
   expect(await restored.locator('#data-table tbody').innerText()).toBe(normalizedRows);
 });
