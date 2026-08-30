@@ -41,6 +41,10 @@ The headline states the job in seven words. The next sentence names teachers and
 | 1 means city A, 2 means B, and so on. | 10 |
 | Range 1–9. | 3 |
 | Same seed + parameters = same result. | 5 |
+| Deterministic seed uses whole numbers. | 5 |
+| 2.5 was changed to 3. | 5 |
+| Deterministic seed needs a whole number from 1 to 999999. | 10 |
+| The previous value was kept. | 6 |
 | Route recalculated: 176.3 units with 0 crossings. | 8 |
 | Nine labeled cities joined by a red nearest-neighbor route. | 9 |
 | Pale dashed lines show every possible city pair. | 8 |
