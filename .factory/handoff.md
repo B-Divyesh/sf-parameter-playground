@@ -1,22 +1,31 @@
-# Parameter Playground — review 2 handoff
+# Parameter Playground — polish 2 handoff
 
-## Result: FAIL
+## Result: PASS
 
-Adversarial first-read review 2 was completed against commit `0532ef4f3721306f1bb571bff7aaf18d749c8584` and the live site on 2026-08-30. No product code was changed.
+Repair commits: `bb9dec15ff752fdbb73a3036ed50add01c48ee91` and `3330e2c`. Production deployment `93151274-5868-4959-9c46-888af9bcb869` succeeded for `sf-parameter-playground`; <https://parameter-playground.sociobot.in/?demo=1#workbench> returned 200 after deployment.
 
-The cold home screen passes. The blocking defect is that the first 390×844 viewport after entering the demo shows setup/navigation but no populated sample field, parameter, chart, result, or table data. `.factory/review-2.md` records this as F-2-1, plus four copy findings, eight unlisted README claims, and two route-metadata findings.
+The phone demo now opens on a real sample result before any setup controls. It shows the authored lesson title, a parameter, route metric, and live chart preview. Demo social metadata, sitemap coverage, terminology, copy audit, and claims coverage are complete. The snapshot keeps the documented blueprint visual system; it only appears on narrow demo screens.
 
-## Verification performed
+## How to run and verify
 
-- Ran every exact `.factory/claims.json` command from clean clone `/tmp/parameter-playground-review2.PFpY69/repo`: 13 commands and 26 desktop/mobile executions passed.
-- Confirmed live demo storage isolation with a sentinel regular draft, Reset behavior, exit behavior, and same-origin requests.
-- Confirmed a fresh live demo reloads offline after service-worker installation.
-- Ran `/opt/fleet/lib/verify-url.sh` against the live home page: no console errors; title, language, one h1, main landmark, alt text, and button labels passed.
-- Ran `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npx playwright test tests/e2e/verifier-regressions.spec.ts`: 22/22 passed.
-- Ran `npm run check`: 13/13 unit/release tests passed, `dist/` built, and 68/68 local browser tests passed.
-- Crawled all live links and metadata routes; verified the real 404 response, security headers, route focus/Back behavior, social-image dimensions, and asset budgets.
-- Rechecked all eight findings from review 1 in the live site and code; all remain fixed.
+```sh
+npm ci
+npm test
+npm run build
+npm run test:claims
+npm run test:e2e
+```
 
-## Next step
+`npm run build` writes the static deployment artifact to `dist/`.
 
-Resolve F-2-1 through F-2-15 in `.factory/review-2.md`, then rerun the full review from a fresh context. The repository remains buildable.
+## Exact evidence
+
+- Fresh clone `/tmp/parameter-playground-polish2-clean.*`: all 14 exact manifest claim commands ran separately after `npm ci`; 28/28 desktop/mobile executions passed.
+- Local: `npm test` passed 13/13; `npm run build` passed; `npm run test:claims` passed 28/28; `npm run test:e2e` passed 72/72.
+- Production: `PLAYWRIGHT_BASE_URL=https://parameter-playground.sociobot.in npm run test:e2e` passed 72/72, including demo isolation, first-viewport sample content, routing/focus/Back, metadata/sitemap, privacy, offline reload, keyboard, 404, and axe checks.
+- Cold live verifier output: `/tmp/parameter-playground-polish2-live.jVN6pr/verify.json`; screenshots: `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-desktop.png` and `/tmp/parameter-playground-polish2-live.jVN6pr/screenshot-mobile.png`.
+- `@axe-core/cli` was attempted but its Selenium wrapper could not find Chrome in this container. The repository’s Playwright axe integration ran in the installed pinned Chromium and found no serious or critical findings locally and live.
+
+## Known gaps
+
+None. `.factory/polish-2.md` maps every finding from reviews 1 and 2 to its implementation and evidence.
